@@ -1,0 +1,288 @@
+[
+    {
+        "name": "PIR motion sensor",
+        "id": "a399b1230c324167aceiuc",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "",
+        "category": "pir",
+        "product_name": "PIR motion sensor",
+        "product_id": "IDkXwcvanigdiTj3",
+        "biz_type": 18,
+        "model": "",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/1524817175gtuah13xg5xa305ri0wqxgvi_0.png",
+        "uuid": "a399b1230c324167aceiuc",
+        "node_id": "a4c1384ee6e84c0f",
+        "mapping": {
+            "101": {
+                "code": "pir",
+                "type": "Enum",
+                "values": {
+                    "range": [
+                        "pir",
+                        "none"
+                    ]
+                }
+            },
+            "103": {
+                "code": "battery",
+                "type": "Integer",
+                "values": {
+                    "unit": "",
+                    "min": 0,
+                    "max": 500,
+                    "scale": 0,
+                    "step": 1
+                }
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Panic Button",
+        "id": "a378e28f9ffbb50906y7ar",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "a4:c1:38:53:dd:0a:8e:88",
+        "uuid": "a4c13853dd0a8e88",
+        "sn": "JDYD-01700718",
+        "category": "sos",
+        "product_name": "Panic Button ",
+        "product_id": "nxdziqzc",
+        "biz_type": 18,
+        "model": "SOS",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/ay1511250453937mDBJE/f4c817ba793393aa5f026ccb5bf4ea70.png",
+        "node_id": "a4c13853dd0a8e88",
+        "mapping": {
+            "3": {
+                "code": "battery_percentage",
+                "type": "Integer",
+                "values": {
+                    "unit": "%",
+                    "min": 0,
+                    "max": 100,
+                    "scale": 0,
+                    "step": 1
+                }
+            },
+            "29": {
+                "code": "sos",
+                "type": "Enum",
+                "values": {
+                    "range": [
+                        "sos"
+                    ]
+                }
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Water leak sensor",
+        "id": "a35bb9c44781e9d8f3hvmi",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "a4:c1:38:8f:de:36:d7:28",
+        "uuid": "a4c1388fde36d728",
+        "category": "sj",
+        "product_name": "Water leak sensor",
+        "product_id": "5ynfoj1f",
+        "biz_type": 18,
+        "model": "NAS-WS02B2",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/ay1503986080106Gppjy/2131280d9397180d7644d8480e84096f.png",
+        "node_id": "a4c1388fde36d728",
+        "mapping": {
+            "1": {
+                "code": "watersensor_state",
+                "type": "Enum",
+                "values": {
+                    "range": [
+                        "alarm",
+                        "normal"
+                    ]
+                }
+            },
+            "4": {
+                "code": "battery_percentage",
+                "type": "Integer",
+                "values": {
+                    "unit": "%",
+                    "min": 0,
+                    "max": 100,
+                    "scale": 0,
+                    "step": 1
+                }
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Smoke Alarm",
+        "id": "a327837a84a6830329ptlq",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "a4:c1:38:23:93:f3:88:81",
+        "uuid": "a4c1382393f38881",
+        "sn": "1001914750011B",
+        "category": "ywbj",
+        "product_name": "Smoke Alarm",
+        "product_id": "up3pngle",
+        "biz_type": 18,
+        "model": "YG500A_SDK",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/ay1565138036928sSi0S/df4b4109ab3dd73e51754e9a44180e6e.jpg",
+        "node_id": "a4c1382393f38881",
+        "mapping": {
+            "1": {
+                "code": "smoke_sensor_status",
+                "type": "Enum",
+                "values": {
+                    "range": [
+                        "alarm",
+                        "normal"
+                    ]
+                }
+            },
+            "4": {
+                "code": "temper_alarm",
+                "type": "Boolean",
+                "values": {}
+            },
+            "15": {
+                "code": "battery_percentage",
+                "type": "Integer",
+                "values": {
+                    "unit": "%",
+                    "min": 0,
+                    "max": 100,
+                    "scale": 0,
+                    "step": 1
+                }
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Audible alarm",
+        "id": "a35d8d52f5d2f60c427axp",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "a4:c1:38:2c:e2:23:30:e4",
+        "uuid": "a4c1382ce22330e4",
+        "category": "sgbj",
+        "product_name": "Audible alarm",
+        "product_id": "t1blo2bj",
+        "biz_type": 18,
+        "model": "NAS-AB02B2",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/ay1503986080106Gppjy/06b2b697b5c9e32e5cffd9dc5021b7d4.png",
+        "node_id": "a4c1382ce22330e4",
+        "mapping": {
+            "5": {
+                "code": "alarm_volume",
+                "type": "Enum",
+                "values": {
+                    "range": [
+                        "low",
+                        "middle",
+                        "high"
+                    ]
+                }
+            },
+            "7": {
+                "code": "alarm_time",
+                "type": "Integer",
+                "values": {
+                    "unit": "s",
+                    "min": 0,
+                    "max": 1800,
+                    "scale": 0,
+                    "step": 10
+                }
+            },
+            "13": {
+                "code": "alarm_switch",
+                "type": "Boolean",
+                "values": {}
+            },
+            "15": {
+                "code": "battery_percentage",
+                "type": "Integer",
+                "values": {
+                    "unit": "%",
+                    "min": 0,
+                    "max": 100,
+                    "scale": 0,
+                    "step": 1
+                }
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Contact Sensor",
+        "id": "a3e50962c30692a12fk1kl",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "a4:c1:38:85:0f:7b:81:e0",
+        "uuid": "a4c138850f7b81e0",
+        "sn": "100120609039A7",
+        "category": "mcs",
+        "product_name": "Contact Sensor",
+        "product_id": "7d8yme6f",
+        "biz_type": 18,
+        "model": "ZD08ZTU\u95e8\u78c1\u5e26\u9632\u62c6",
+        "sub": true,
+        "icon": "https://images.iotbing.com/smart/icon/ay1525749833414yotNt/2b9401945494d13a039eb9e8c77682c8.png",
+        "node_id": "a4c138850f7b81e0",
+        "mapping": {
+            "1": {
+                "code": "doorcontact_state",
+                "type": "Boolean",
+                "values": {}
+            },
+            "2": {
+                "code": "battery_percentage",
+                "type": "Integer",
+                "values": {
+                    "unit": "%",
+                    "min": 0,
+                    "max": 100,
+                    "scale": 0,
+                    "step": 1
+                }
+            },
+            "4": {
+                "code": "temper_alarm",
+                "type": "Boolean",
+                "values": {}
+            }
+        },
+        "parent": "a331169c0bd226e97brqu2",
+        "ip": "",
+        "version": ""
+    },
+    {
+        "name": "Zigbee LAN Gateway",
+        "id": "a331169c0bd226e97brqu2",
+        "key": "CfWHxtj'|:UJcDKa",
+        "mac": "00:33:7a:78:bb:5d",
+        "uuid": "c303a031e7f9e15b",
+        "category": "wg2",
+        "product_name": "Zigbee LAN Gateway",
+        "product_id": "axw2wati6x8wwqrh",
+        "biz_type": 18,
+        "model": "JMWZG2",
+        "sub": false,
+        "icon": "https://images.iotbing.com/smart/icon/ay1562803410690AUgvL/ee86ae8faf09f6aa8893dcbaa9b8622a.png",
+        "ip": "192.168.1.124",
+        "version": "3.4"
+    }
+]

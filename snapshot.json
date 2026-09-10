@@ -1,0 +1,26 @@
+{
+    "timestamp": 1788945870.1092672,
+    "devices": [
+        {
+            "id": "a331169c0bd226e97brqu2",
+            "ip": "192.168.1.124",
+            "active": 2,
+            "encrypt": true,
+            "productKey": "keyyj3fy8x98arty",
+            "lan_cap": 5530,
+            "lan_seq": 8,
+            "lan_ablilty": 3,
+            "token": true,
+            "wf_cfg": true,
+            "clientLink": 30,
+            "name": "Zigbee LAN Gateway",
+            "key": "CfWHxtj'|:UJcDKa",
+            "mac": "00:33:7a:78:bb:5d",
+            "ability": 0,
+            "dev_type": "default",
+            "err": "No response",
+            "origin": "broadcast",
+            "ver": "3.4"
+        }
+    ]
+}

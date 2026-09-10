@@ -1,0 +1,416 @@
+{
+    "result": [
+        {
+            "active_time": 1788755453,
+            "biz_type": 18,
+            "category": "pir",
+            "create_time": 1788755453,
+            "icon": "smart/icon/1524817175gtuah13xg5xa305ri0wqxgvi_0.png",
+            "id": "a399b1230c324167aceiuc",
+            "ip": "",
+            "lat": "-6.84",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "107.56",
+            "model": "",
+            "name": "PIR motion sensor",
+            "node_id": "a4c1384ee6e84c0f",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "IDkXwcvanigdiTj3",
+            "product_name": "PIR motion sensor",
+            "status": [
+                {
+                    "code": "pir",
+                    "value": "none"
+                },
+                {
+                    "code": "battery",
+                    "value": 100
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a399b1230c324167aceiuc",
+            "mapping": {
+                "101": {
+                    "code": "pir",
+                    "type": "Enum",
+                    "values": {
+                        "range": [
+                            "pir",
+                            "none"
+                        ]
+                    }
+                },
+                "103": {
+                    "code": "battery",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "",
+                        "min": 0,
+                        "max": 500,
+                        "scale": 0,
+                        "step": 1
+                    }
+                }
+            }
+        },
+        {
+            "active_time": 1788509470,
+            "biz_type": 18,
+            "category": "sos",
+            "create_time": 1788509470,
+            "icon": "smart/icon/ay1511250453937mDBJE/f4c817ba793393aa5f026ccb5bf4ea70.png",
+            "id": "a378e28f9ffbb50906y7ar",
+            "ip": "",
+            "lat": "-6.84",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "107.56",
+            "model": "SOS",
+            "name": "Panic Button ",
+            "node_id": "a4c13853dd0a8e88",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "nxdziqzc",
+            "product_name": "Panic Button ",
+            "status": [
+                {
+                    "code": "battery_percentage",
+                    "value": 60
+                },
+                {
+                    "code": "sos",
+                    "value": "sos"
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a4c13853dd0a8e88",
+            "mapping": {
+                "3": {
+                    "code": "battery_percentage",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "%",
+                        "min": 0,
+                        "max": 100,
+                        "scale": 0,
+                        "step": 1
+                    }
+                },
+                "29": {
+                    "code": "sos",
+                    "type": "Enum",
+                    "values": {
+                        "range": [
+                            "sos"
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "active_time": 1788509134,
+            "biz_type": 18,
+            "category": "sj",
+            "create_time": 1788509134,
+            "icon": "smart/icon/ay1503986080106Gppjy/2131280d9397180d7644d8480e84096f.png",
+            "id": "a35bb9c44781e9d8f3hvmi",
+            "ip": "",
+            "lat": "-6.84",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "107.56",
+            "model": "NAS-WS02B2",
+            "name": "Water leak sensor",
+            "node_id": "a4c1388fde36d728",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "5ynfoj1f",
+            "product_name": "Water leak sensor",
+            "status": [
+                {
+                    "code": "watersensor_state",
+                    "value": "normal"
+                },
+                {
+                    "code": "battery_percentage",
+                    "value": 100
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a4c1388fde36d728",
+            "mapping": {
+                "1": {
+                    "code": "watersensor_state",
+                    "type": "Enum",
+                    "values": {
+                        "range": [
+                            "alarm",
+                            "normal"
+                        ]
+                    }
+                },
+                "4": {
+                    "code": "battery_percentage",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "%",
+                        "min": 0,
+                        "max": 100,
+                        "scale": 0,
+                        "step": 1
+                    }
+                }
+            }
+        },
+        {
+            "active_time": 1788505397,
+            "biz_type": 18,
+            "category": "ywbj",
+            "create_time": 1788505397,
+            "icon": "smart/icon/ay1565138036928sSi0S/df4b4109ab3dd73e51754e9a44180e6e.jpg",
+            "id": "a327837a84a6830329ptlq",
+            "ip": "",
+            "lat": "-6.84",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "107.56",
+            "model": "YG500A_SDK",
+            "name": "Smoke Alarm",
+            "node_id": "a4c1382393f38881",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "up3pngle",
+            "product_name": "Smoke Alarm",
+            "status": [
+                {
+                    "code": "smoke_sensor_status",
+                    "value": "normal"
+                },
+                {
+                    "code": "temper_alarm",
+                    "value": false
+                },
+                {
+                    "code": "battery_percentage",
+                    "value": 100
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a4c1382393f38881",
+            "mapping": {
+                "1": {
+                    "code": "smoke_sensor_status",
+                    "type": "Enum",
+                    "values": {
+                        "range": [
+                            "alarm",
+                            "normal"
+                        ]
+                    }
+                },
+                "4": {
+                    "code": "temper_alarm",
+                    "type": "Boolean",
+                    "values": {}
+                },
+                "15": {
+                    "code": "battery_percentage",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "%",
+                        "min": 0,
+                        "max": 100,
+                        "scale": 0,
+                        "step": 1
+                    }
+                }
+            }
+        },
+        {
+            "active_time": 1788504020,
+            "biz_type": 18,
+            "category": "sgbj",
+            "create_time": 1788504020,
+            "icon": "smart/icon/ay1503986080106Gppjy/06b2b697b5c9e32e5cffd9dc5021b7d4.png",
+            "id": "a35d8d52f5d2f60c427axp",
+            "ip": "",
+            "lat": "0",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "0",
+            "model": "NAS-AB02B2",
+            "name": "Audible alarm",
+            "node_id": "a4c1382ce22330e4",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "t1blo2bj",
+            "product_name": "Audible alarm",
+            "status": [
+                {
+                    "code": "alarm_volume",
+                    "value": "low"
+                },
+                {
+                    "code": "alarm_time",
+                    "value": 10
+                },
+                {
+                    "code": "alarm_switch",
+                    "value": false
+                },
+                {
+                    "code": "battery_percentage",
+                    "value": 100
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a4c1382ce22330e4",
+            "mapping": {
+                "5": {
+                    "code": "alarm_volume",
+                    "type": "Enum",
+                    "values": {
+                        "range": [
+                            "low",
+                            "middle",
+                            "high"
+                        ]
+                    }
+                },
+                "7": {
+                    "code": "alarm_time",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "s",
+                        "min": 0,
+                        "max": 1800,
+                        "scale": 0,
+                        "step": 10
+                    }
+                },
+                "13": {
+                    "code": "alarm_switch",
+                    "type": "Boolean",
+                    "values": {}
+                },
+                "15": {
+                    "code": "battery_percentage",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "%",
+                        "min": 0,
+                        "max": 100,
+                        "scale": 0,
+                        "step": 1
+                    }
+                }
+            }
+        },
+        {
+            "active_time": 1788494230,
+            "biz_type": 18,
+            "category": "mcs",
+            "create_time": 1788494230,
+            "icon": "smart/icon/ay1525749833414yotNt/2b9401945494d13a039eb9e8c77682c8.png",
+            "id": "a3e50962c30692a12fk1kl",
+            "ip": "",
+            "lat": "0",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "0",
+            "model": "ZD08ZTU\u95e8\u78c1\u5e26\u9632\u62c6",
+            "name": "Contact Sensor",
+            "node_id": "a4c138850f7b81e0",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "7d8yme6f",
+            "product_name": "Contact Sensor",
+            "status": [
+                {
+                    "code": "doorcontact_state",
+                    "value": false
+                },
+                {
+                    "code": "battery_percentage",
+                    "value": 100
+                },
+                {
+                    "code": "temper_alarm",
+                    "value": true
+                }
+            ],
+            "sub": true,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872651,
+            "uuid": "a4c138850f7b81e0",
+            "mapping": {
+                "1": {
+                    "code": "doorcontact_state",
+                    "type": "Boolean",
+                    "values": {}
+                },
+                "2": {
+                    "code": "battery_percentage",
+                    "type": "Integer",
+                    "values": {
+                        "unit": "%",
+                        "min": 0,
+                        "max": 100,
+                        "scale": 0,
+                        "step": 1
+                    }
+                },
+                "4": {
+                    "code": "temper_alarm",
+                    "type": "Boolean",
+                    "values": {}
+                }
+            }
+        },
+        {
+            "active_time": 1788494092,
+            "biz_type": 18,
+            "category": "wg2",
+            "create_time": 1788494092,
+            "icon": "smart/icon/ay1562803410690AUgvL/ee86ae8faf09f6aa8893dcbaa9b8622a.png",
+            "id": "a331169c0bd226e97brqu2",
+            "ip": "103.157.48.1",
+            "lat": "-6.84",
+            "local_key": "CfWHxtj'|:UJcDKa",
+            "lon": "107.56",
+            "model": "JMWZG2",
+            "name": "Zigbee LAN Gateway",
+            "online": true,
+            "owner_id": "604111458",
+            "product_id": "axw2wati6x8wwqrh",
+            "product_name": "Zigbee LAN Gateway",
+            "sub": false,
+            "time_zone": "+07:00",
+            "uid": "sg1788493577562KhXsx",
+            "update_time": 1788872650,
+            "uuid": "c303a031e7f9e15b"
+        }
+    ],
+    "success": true,
+    "t": 1788945847262,
+    "tid": "34cf522dac3011f1b5fb76179f23c73f",
+    "file": {
+        "name": "tuya-raw.json",
+        "description": "Full raw list of Tuya devices.",
+        "account": "tk47q9nqhuwfw8cjgusu",
+        "date": "2026-09-09T16:24:12.057813",
+        "tinytuya": "1.20.0"
+    }
+}

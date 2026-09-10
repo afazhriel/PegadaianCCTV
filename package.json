@@ -1,0 +1,32 @@
+{
+  "name": "projectcctv",
+  "version": "1.0.0",
+  "description": "100% Local Self-Hosted Smart Home Dashboard - Zero Cloud Dependencies",
+  "main": "backend/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "iot",
+    "tuya",
+    "cctv",
+    "go2rtc",
+    "webrtc",
+    "local-first",
+    "self-hosted"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "tuyapi": "^7.7.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,29 @@
+# go2rtc Configuration for ProjectCCTV
+# Docs: https://github.com/AlexxIT/go2rtc
+# Run: go2rtc -c config/go2rtc.yaml
+
+# Global settings
+api:
+  # REST API port (used by frontend for stream info)
+  port: 1984
+  # WebSocket port (used by html-api.js for WebRTC signaling)
+  ws_port: 1985
+  # Allow CORS for local dashboard
+  cors: "*"
+
+# RTSP Stream Sources
+# Format: stream_name: rtsp://user:pass@ip:port/path
+streams:
+  # Masukkan CCTV Hikvision Anda di sini
+  hikvision_teras: rtsp://admin:Aptek100%@192.168.1.4:554/Streaming/Channels/201
+
+  # Tuya Cameras via Tuya-RTSP-Bridge
+  # Bridge must be running separately (e.g., docker run -d --name tuya-bridge ...)
+  # Default bridge port: 8554
+  cam_tuya_doorbell: rtsp://192.168.1.150:8554/doorbell
+  cam_tuya_baby_monitor: rtsp://192.168.1.150:8554/baby_monitor
+
+# WebRTC settings
+webrtc:
+  # ICE servers (STUN/TURN) - local only, no external STUN needed for LAN
+  # For pure local LAN, go2rtc works without external ICE servers
