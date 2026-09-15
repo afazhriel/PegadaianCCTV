@@ -1,329 +1,2166 @@
 <!DOCTYPE html>
+
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Security Dashboard</title>
+  <title>
+    Security System
+  </title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-    rel="stylesheet">
-
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@1/dist/hls.min.js"></script>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
+
+    :root {
+
+      --background: #f3f6f9;
+      --surface: #ffffff;
+
+      --border: #dce5ee;
+      --border-soft: #edf1f5;
+
+      --text: #0f172a;
+      --muted: #8190a5;
+
+      --green: #16a34a;
+      --green-soft: #f0fdf4;
+
+      --blue: #2563eb;
+      --blue-soft: #eff6ff;
+
+      --yellow: #d97706;
+      --yellow-soft: #fffbeb;
+
+      --red: #dc2626;
+      --red-soft: #fef2f2;
+
+    }
+
+
+    html,
     body {
-      font-family: "JetBrains Mono", monospace;
+
+      margin: 0;
+
+      width: 100%;
+      min-height: 100%;
+
+      background:
+        var(--background);
+
+      color:
+        var(--text);
+
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
     }
 
-    .status-dot {
-      width: 9px;
-      height: 9px;
+
+    body {
+      padding: 10px;
+    }
+
+
+    button,
+    input,
+    select {
+
+      font: inherit;
+
+    }
+
+
+    button {
+      cursor: pointer;
+    }
+
+
+    /* ============================================================
+       PAGE
+       ============================================================ */
+
+    .page {
+
+      width: 100%;
+
+      margin: 0 auto;
+
+    }
+
+
+    /* ============================================================
+       SECURITY
+       ============================================================ */
+
+    .security-panel {
+
+      width: 100%;
+
+      min-height: 510px;
+
+      padding: 20px 24px;
+
+      background: #ffffff;
+
+      border:
+        1px solid #eef2f6;
+
+      border-radius: 8px;
+
+    }
+
+
+    /* ============================================================
+       MAIN HEADER
+       ============================================================ */
+
+    .main-header {
+
+      min-height: 70px;
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1.2fr 1fr;
+
+      align-items: center;
+
+      gap: 20px;
+
+      padding-bottom: 18px;
+
+      border-bottom:
+        1px solid var(--border-soft);
+
+    }
+
+
+    .brand {
+
+      display: flex;
+
+      align-items: center;
+
+    }
+
+
+    .brand img {
+
+      height: 48px;
+
+      max-width: 270px;
+
+      width: auto;
+
+      display: block;
+
+      object-fit: contain;
+
+    }
+
+
+    .header-title {
+
+      text-align: center;
+
+    }
+
+
+    .header-title h1 {
+
+      margin: 0;
+
+      font-size: 22px;
+
+      font-weight: 800;
+
+    }
+
+
+    .header-title p {
+
+      margin: 6px 0 0;
+
+      font-size: 11px;
+
+      color:
+        var(--muted);
+
+    }
+
+
+    .header-status {
+
+      display: flex;
+
+      justify-content: flex-end;
+
+      align-items: center;
+
+      gap: 8px;
+
+    }
+
+
+    .pill {
+
+      min-height: 36px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 7px;
+
+      padding: 0 12px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 9px;
+
+      background: #f8fafc;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      color: #475569;
+
+      white-space: nowrap;
+
+    }
+
+
+    .dot {
+
+      width: 8px;
+      height: 8px;
+
+      min-width: 8px;
+
       border-radius: 50%;
-      flex-shrink: 0;
-    }
 
-    .dot-ok {
-      background: #22c55e;
-      box-shadow: 0 0 8px rgba(34, 197, 94, 0.8);
-    }
-
-    .dot-alert {
       background: #ef4444;
-      box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
+
     }
 
-    .dot-warn {
+
+    .dot.online {
+
+      background: #22c55e;
+
+      box-shadow:
+        0 0 0 3px rgba(34, 197, 94, .12);
+
+    }
+
+
+    /* ============================================================
+       SUMMARY
+       ============================================================ */
+
+    .summary-grid {
+
+      margin-top: 16px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(3,
+          minmax(0, 1fr));
+
+      gap: 14px;
+
+    }
+
+
+    .summary {
+
+      min-height: 72px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 13px;
+
+      padding: 13px 16px;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 14px;
+
+      background: #fff;
+
+    }
+
+
+    .summary.security {
+      background: #f8fbff;
+    }
+
+
+    .summary.environment {
+      background: #f7fcf8;
+    }
+
+
+    .summary.nvr {
+      background: #fafafa;
+    }
+
+
+    .summary-icon {
+
+      width: 44px;
+      height: 44px;
+
+      min-width: 44px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 12px;
+
+      background:
+        var(--blue-soft);
+
+      color:
+        var(--blue);
+
+    }
+
+
+    .summary.environment .summary-icon {
+
+      background: #eaf8ef;
+
+      color:
+        var(--green);
+
+    }
+
+
+    .summary.nvr .summary-icon {
+
+      background: #f1f5f9;
+
+      color: #475569;
+
+    }
+
+
+    .summary-icon svg {
+
+      width: 22px;
+      height: 22px;
+
+    }
+
+
+    .summary-label {
+
+      font-size: 11px;
+
+      color: #64748b;
+
+    }
+
+
+    .summary-value {
+
+      margin-top: 5px;
+
+      font-size: 14px;
+
+      font-weight: 800;
+
+      color:
+        var(--green);
+
+    }
+
+
+    /* ============================================================
+       SENSOR
+       ============================================================ */
+
+    .sensor-grid {
+
+      margin-top: 16px;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(6,
+          minmax(0, 1fr));
+
+      gap: 14px;
+
+    }
+
+
+    .sensor-card {
+
+      min-width: 0;
+
+      min-height: 150px;
+
+      padding: 16px;
+
+      display: flex;
+
+      flex-direction: column;
+
+      justify-content: space-between;
+
+      background: #fff;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 14px;
+
+    }
+
+
+    .sensor-card.warning {
+
+      background:
+        var(--yellow-soft);
+
+      border-color: #fde68a;
+
+    }
+
+
+    .sensor-card.danger {
+
+      background:
+        var(--red-soft);
+
+      border-color: #fecaca;
+
+    }
+
+
+    .sensor-top {
+
+      display: flex;
+
+      align-items: flex-start;
+
+      justify-content: space-between;
+
+      gap: 8px;
+
+    }
+
+
+    .sensor-icon {
+
+      width: 44px;
+      height: 44px;
+
+      min-width: 44px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      background: #f1f5f9;
+
+      border-radius: 12px;
+
+      color: #64748b;
+
+    }
+
+
+    .sensor-icon svg {
+
+      width: 22px;
+      height: 22px;
+
+    }
+
+
+    .sensor-card.warning .sensor-icon {
+
+      background: #fef3c7;
+
+      color: #d97706;
+
+    }
+
+
+    .sensor-card.danger .sensor-icon {
+
+      background: #fee2e2;
+
+      color: #dc2626;
+
+    }
+
+
+    .battery {
+
+      min-height: 27px;
+
+      padding: 0 7px;
+
+      display: flex;
+
+      align-items: center;
+
+      border:
+        1px solid var(--border-soft);
+
+      border-radius: 7px;
+
+      background: #f8fafc;
+
+      font-size: 9px;
+
+      font-weight: 700;
+
+      color: #64748b;
+
+    }
+
+
+    .battery.low {
+
+      color: #dc2626;
+
+      background: #fef2f2;
+
+      border-color: #fecaca;
+
+    }
+
+
+    .sensor-name {
+
+      font-size: 13px;
+
+      font-weight: 800;
+
+    }
+
+
+    .sensor-state {
+
+      margin-top: 8px;
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 6px;
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+      color: #64748b;
+
+    }
+
+
+    .sensor-state-dot {
+
+      width: 8px;
+      height: 8px;
+
+      min-width: 8px;
+
+      border-radius: 50%;
+
+      background: #22c55e;
+
+    }
+
+
+    .sensor-card.warning .sensor-state {
+
+      color: #d97706;
+
+    }
+
+
+    .sensor-card.warning .sensor-state-dot {
+
       background: #f59e0b;
-      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+
     }
 
-    .dot-idle {
-      background: #64748b;
+
+    .sensor-card.danger .sensor-state {
+
+      color: #dc2626;
+
     }
 
-    .video-stream {
+
+    .sensor-card.danger .sensor-state-dot {
+
+      background: #ef4444;
+
+    }
+
+
+    .panel-footer {
+
+      margin-top: 17px;
+
+      text-align: right;
+
+      font-size: 9px;
+
+      color: #94a3b8;
+
+    }
+
+
+    /* ============================================================
+       SECTION HEADER
+       ============================================================ */
+
+    .section-title-row {
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 15px;
+
+      margin-bottom: 10px;
+
+    }
+
+
+    .section-title {
+
+      font-size: 17px;
+
+      font-weight: 800;
+
+      color: #0f172a;
+
+    }
+
+
+    .section-description {
+
+      margin-top: 3px;
+
+      font-size: 10px;
+
+      color: #94a3b8;
+
+    }
+
+
+    /* ============================================================
+       LIVE CAMERA
+       ============================================================ */
+
+    .camera-section {
+
+      margin-top: 10px;
+
+      padding: 16px;
+
+      background: #ffffff;
+
+      border:
+        1px solid #eef2f6;
+
+      border-radius: 8px;
+
+    }
+
+
+    .camera-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2,
+          minmax(0, 1fr));
+
+      gap: 10px;
+
+    }
+
+
+    .camera-card {
+
+      overflow: hidden;
+
+      background: #ffffff;
+
+      border:
+        1px solid var(--border);
+
+      border-radius: 8px;
+
+    }
+
+
+    /* ============================================================
+       CAMERA HEADER
+       ============================================================ */
+
+    .camera-header {
+
+      min-height: 50px;
+
+      display: flex;
+
+      align-items: center;
+
+      justify-content: space-between;
+
+      gap: 12px;
+
+      padding: 0 12px;
+
+      background: #ffffff;
+
+      border-bottom:
+        1px solid var(--border-soft);
+
+    }
+
+
+    .camera-brand {
+
+      min-width: 0;
+
+      display: flex;
+
+      align-items: center;
+
+    }
+
+
+    .camera-brand img {
+
+      height: 34px;
+
+      max-width: 190px;
+
+      width: auto;
+
+      display: block;
+
+    }
+
+
+    .camera-right {
+
+      display: flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+    }
+
+
+    .camera-status {
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+      color: #64748b;
+
+    }
+
+
+    .camera-status.connecting {
+      color: #d97706;
+    }
+
+
+    .camera-status.live {
+      color: #16a34a;
+    }
+
+
+    .camera-status.error {
+      color: #dc2626;
+    }
+
+
+    .camera-label {
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+      letter-spacing: .8px;
+
+      color: #16a34a;
+
+      white-space: nowrap;
+
+    }
+
+
+    /* ============================================================
+       CAMERA BUTTONS
+       ============================================================ */
+
+    .camera-button {
+
+      min-height: 30px;
+
+      padding: 0 10px;
+
+      border:
+        1px solid #dbe3ec;
+
+      border-radius: 7px;
+
+      background: #f8fafc;
+
+      color: #334155;
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+    }
+
+
+    .camera-button:hover {
+
+      background: #eef2f7;
+
+    }
+
+
+    .camera-button.playing {
+
+      background: #fef2f2;
+
+      border-color: #fecaca;
+
+      color: #dc2626;
+
+    }
+
+
+    .fullscreen-button {
+
+      width: 30px;
+      height: 30px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 0;
+
+      border:
+        1px solid #e2e8f0;
+
+      border-radius: 7px;
+
+      background: #f8fafc;
+
+      color: #64748b;
+
+    }
+
+
+    .fullscreen-button:disabled {
+
+      opacity: .35;
+
+      cursor: not-allowed;
+
+    }
+
+
+    .fullscreen-button svg {
+
+      width: 17px;
+      height: 17px;
+
+    }
+
+
+    /* ============================================================
+       CAMERA FRAME
+       ============================================================ */
+
+    .camera-frame {
+
+      position: relative;
+
+      width: 100%;
+
+      aspect-ratio: 16 / 9;
+
+      overflow: hidden;
+
+      background: #111827;
+
+    }
+
+
+    .camera-frame iframe {
+
+      position: absolute;
+
+      inset: 0;
+
       width: 100%;
       height: 100%;
-      background: black;
-      object-fit: contain;
+
+      border: 0;
+
+      display: none;
+
+      background: #000;
+
     }
 
-    .spinner {
+
+    /* ============================================================
+       CAMERA PLACEHOLDER
+       ============================================================ */
+
+    .camera-placeholder {
+
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 2;
+
+      display: flex;
+
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 12px;
+
+      background:
+        linear-gradient(145deg,
+          #111827,
+          #1f2937);
+
+      color: #cbd5e1;
+
+      text-align: center;
+
+    }
+
+
+    .camera-placeholder-icon {
+
+      width: 52px;
+      height: 52px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      border:
+        1px solid #475569;
+
+      border-radius: 50%;
+
+      color: #94a3b8;
+
+    }
+
+
+    .camera-placeholder-icon svg {
+
       width: 24px;
       height: 24px;
 
-      border: 3px solid #1f2937;
-      border-top-color: #3b82f6;
+    }
+
+
+    .camera-placeholder-title {
+
+      font-size: 12px;
+
+      font-weight: 800;
+
+    }
+
+
+    .camera-placeholder-subtitle {
+
+      font-size: 9px;
+
+      color: #94a3b8;
+
+    }
+
+
+    .play-big-button {
+
+      min-width: 110px;
+
+      height: 38px;
+
+      border: 0;
+
+      border-radius: 9px;
+
+      background: #16a34a;
+
+      color: #ffffff;
+
+      font-size: 11px;
+
+      font-weight: 800;
+
+    }
+
+
+    .play-big-button:hover {
+
+      background: #15803d;
+
+    }
+
+
+    /* ============================================================
+       CAMERA LOADING
+       ============================================================ */
+
+    .camera-loading {
+
+      position: absolute;
+
+      inset: 0;
+
+      z-index: 5;
+
+      display: none;
+
+      flex-direction: column;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 10px;
+
+      background: #111827;
+
+      color: #cbd5e1;
+
+      font-size: 11px;
+
+      pointer-events: none;
+
+    }
+
+
+    .loader {
+
+      width: 25px;
+      height: 25px;
+
+      border:
+        3px solid #334155;
+
+      border-top-color: #22c55e;
 
       border-radius: 50%;
 
-      animation: spin 0.8s linear infinite;
+      animation:
+        spin .8s linear infinite;
+
     }
+
 
     @keyframes spin {
+
       to {
-        transform: rotate(360deg);
+
+        transform:
+          rotate(360deg);
+
       }
+
+    }
+
+
+    /* ============================================================
+       CAMERA FULLSCREEN
+       ============================================================ */
+
+    .camera-card:fullscreen {
+
+      width: 100vw;
+      height: 100vh;
+
+      display: flex;
+
+      flex-direction: column;
+
+      background: #000;
+
+      border: 0;
+
+      border-radius: 0;
+
+    }
+
+
+    .camera-card:fullscreen .camera-header {
+
+      flex: 0 0 54px;
+
+      height: 54px;
+
+      padding: 0 16px;
+
+      background: #ffffff !important;
+
+      color: #0f172a !important;
+
+      border-bottom:
+        1px solid #e2e8f0;
+
+    }
+
+
+    .camera-card:fullscreen .camera-brand img {
+
+      height: 40px;
+
+      max-width: 240px;
+
+    }
+
+
+    .camera-card:fullscreen .camera-frame {
+
+      flex: 1;
+
+      min-height: 0;
+
+      aspect-ratio: auto;
+
+    }
+
+
+    /* ============================================================
+       PLAYBACK
+       ============================================================ */
+
+    .playback-section {
+
+      margin-top: 10px;
+
+      padding: 18px;
+
+      background: #ffffff;
+
+      border:
+        1px solid #eef2f6;
+
+      border-radius: 8px;
+
+    }
+
+
+    .playback-controls {
+
+      display: grid;
+
+      grid-template-columns:
+        1fr 1.3fr 1fr 1fr;
+
+      gap: 10px;
+
+      margin-top: 14px;
+
+    }
+
+
+    .field {
+
+      min-width: 0;
+
+    }
+
+
+    .field label {
+
+      display: block;
+
+      margin-bottom: 5px;
+
+      font-size: 9px;
+
+      font-weight: 800;
+
+      color: #64748b;
+
+      text-transform: uppercase;
+
+      letter-spacing: .5px;
+
+    }
+
+
+    .field input,
+    .field select {
+
+      width: 100%;
+
+      height: 39px;
+
+      padding: 0 10px;
+
+      border:
+        1px solid #dbe3ec;
+
+      border-radius: 8px;
+
+      outline: 0;
+
+      background: #ffffff;
+
+      color: #0f172a;
+
+      font-size: 11px;
+
+      font-weight: 600;
+
+    }
+
+
+    .field input:focus,
+    .field select:focus {
+
+      border-color: #60a5fa;
+
+      box-shadow:
+        0 0 0 3px rgba(59, 130, 246, .10);
+
+    }
+
+
+    .playback-actions {
+
+      margin-top: 12px;
+
+      display: flex;
+
+      align-items: center;
+
+      flex-wrap: wrap;
+
+      gap: 8px;
+
+    }
+
+
+    .action-button {
+
+      min-height: 38px;
+
+      padding: 0 14px;
+
+      border-radius: 8px;
+
+      border:
+        1px solid #dbe3ec;
+
+      background: #ffffff;
+
+      color: #334155;
+
+      font-size: 10px;
+
+      font-weight: 800;
+
+    }
+
+
+    .action-button:hover {
+
+      background: #f8fafc;
+
+    }
+
+
+    .action-button.primary {
+
+      background: #2563eb;
+
+      border-color: #2563eb;
+
+      color: #ffffff;
+
+    }
+
+
+    .action-button.primary:hover {
+
+      background: #1d4ed8;
+
+    }
+
+
+    .action-button.download {
+
+      background: #16a34a;
+
+      border-color: #16a34a;
+
+      color: #ffffff;
+
+    }
+
+
+    .action-button.download:hover {
+
+      background: #15803d;
+
+    }
+
+
+    .action-button.stop {
+
+      color: #dc2626;
+
+      border-color: #fecaca;
+
+      background: #fef2f2;
+
+    }
+
+
+    .playback-status {
+
+      margin-left: auto;
+
+      font-size: 10px;
+
+      font-weight: 700;
+
+      color: #64748b;
+
+    }
+
+
+    .playback-player {
+
+      position: relative;
+
+      width: 100%;
+
+      margin-top: 14px;
+
+      overflow: hidden;
+
+      aspect-ratio: 16 / 9;
+
+      background: #111827;
+
+      border-radius: 10px;
+
+    }
+
+
+    .playback-player video {
+
+      width: 100%;
+      height: 100%;
+
+      display: block;
+
+      object-fit: contain;
+
+      background: #000;
+
+    }
+
+
+    .playback-empty {
+
+      position: absolute;
+
+      inset: 0;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      text-align: center;
+
+      padding: 20px;
+
+      color: #94a3b8;
+
+      font-size: 11px;
+
+      pointer-events: none;
+
+    }
+
+
+    .playback-note {
+
+      margin-top: 10px;
+
+      font-size: 9px;
+
+      line-height: 1.5;
+
+      color: #94a3b8;
+
+    }
+
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+
+    @media(max-width:1100px) {
+
+      .sensor-grid {
+
+        grid-template-columns:
+          repeat(3,
+            minmax(0, 1fr));
+
+      }
+
+
+      .playback-controls {
+
+        grid-template-columns:
+          repeat(2,
+            minmax(0, 1fr));
+
+      }
+
+    }
+
+
+    @media(max-width:800px) {
+
+      .summary-grid {
+
+        grid-template-columns: 1fr;
+
+      }
+
+    }
+
+
+    @media(max-width:700px) {
+
+      body {
+        padding: 6px;
+      }
+
+
+      .security-panel {
+        padding: 14px;
+      }
+
+
+      .main-header {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 12px;
+
+      }
+
+
+      .brand {
+        justify-content: center;
+      }
+
+
+      .header-title {
+        text-align: center;
+      }
+
+
+      .header-status {
+        justify-content: center;
+      }
+
+
+      .sensor-grid {
+
+        grid-template-columns:
+          repeat(2,
+            minmax(0, 1fr));
+
+        gap: 9px;
+
+      }
+
+
+      .sensor-card {
+
+        min-height: 130px;
+
+        padding: 12px;
+
+      }
+
+
+      .camera-grid {
+
+        grid-template-columns: 1fr;
+
+      }
+
+
+      .playback-controls {
+
+        grid-template-columns: 1fr 1fr;
+
+      }
+
+
+      .playback-status {
+
+        width: 100%;
+
+        margin-left: 0;
+
+      }
+
+    }
+
+
+    @media(max-width:430px) {
+
+      .sensor-grid {
+
+        grid-template-columns:
+          repeat(2,
+            minmax(0, 1fr));
+
+      }
+
+
+      .playback-controls {
+
+        grid-template-columns: 1fr;
+
+      }
+
+
+      .camera-header {
+
+        align-items: flex-start;
+
+        padding-top: 8px;
+        padding-bottom: 8px;
+
+      }
+
+
+      .camera-right {
+
+        flex-wrap: wrap;
+
+        justify-content: flex-end;
+
+      }
+
     }
   </style>
+
+  <script src="/hls.min.js"></script>
 </head>
 
-<body class="min-h-screen bg-slate-950 text-slate-100">
 
-  <main class="mx-auto max-w-[1600px] p-4 md:p-6 lg:p-8 space-y-7">
+<body>
 
-    <!-- HEADER -->
-    <header class="
-      flex flex-col gap-4
-      border-b border-slate-800
-      pb-5
-      md:flex-row
-      md:items-center
-      md:justify-between
-    ">
 
-      <div>
-        <h1 class="text-2xl font-bold">
-          Agen Pegadaian Cilangkap
-        </h1>
+  <main class="page">
 
-        <p class="mt-1 text-sm text-slate-400">
-          Realtime Sensor & CCTV Monitoring
-        </p>
-      </div>
 
-      <div class="flex flex-wrap items-center gap-3 text-xs">
+    <!-- ============================================================
+         SECURITY
+         ============================================================ -->
 
-        <div class="
-          rounded-lg
-          border border-slate-800
-          bg-slate-900
-          px-3 py-2
-        ">
-          <span class="text-slate-500">API</span>
+    <section class="security-panel">
 
-          <span id="apiStatus" class="ml-2 font-semibold text-amber-400">
-            CONNECTING
-          </span>
+
+      <header class="main-header">
+
+
+        <div class="brand">
+
+          <img id="mainLogo" alt="Pegadaian">
+
         </div>
 
-        <div id="lastUpdate" class="
-          rounded-lg
-          border border-slate-800
-          bg-slate-900
-          px-3 py-2
-          text-slate-400
-        ">
-          Memuat...
+
+        <div class="header-title">
+
+          <h1>
+            Security System
+          </h1>
+
+          <p>
+            Realtime Security & Sensor Monitoring
+          </p>
+
         </div>
 
-      </div>
-    </header>
+
+        <div class="header-status">
 
 
-    <!-- SENSOR -->
-    <section class="space-y-3">
+          <div id="currentDate" class="pill">
+            --
+          </div>
 
-      <div class="flex items-center justify-between">
 
-        <h2 class="text-base font-semibold text-slate-200">
-          Sensor & NVR
-        </h2>
+          <div class="pill">
 
-        <span class="text-xs text-slate-500">
-          Refresh 1 detik
-        </span>
+            <span id="liveDot" class="dot"></span>
 
-      </div>
+            <span id="liveText">
+              Connecting
+            </span>
 
-      <div id="sensorGrid" class="
-        grid
-        grid-cols-1
-        gap-3
-        sm:grid-cols-2
-        lg:grid-cols-3
-        xl:grid-cols-4
-      ">
+          </div>
 
-        <div class="col-span-full flex justify-center py-8">
-          <div class="spinner"></div>
+
         </div>
 
+
+      </header>
+
+
+      <!-- SUMMARY -->
+
+      <div class="summary-grid">
+
+
+        <div class="summary security">
+
+          <div class="summary-icon">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <path d="
+                  M12 22s8-4 8-10V5
+                  l-8-3-8 3v7
+                  c0 6 8 10 8 10z
+                " />
+
+              <path d="M9 12l2 2 4-4" />
+
+            </svg>
+
+          </div>
+
+
+          <div>
+
+            <div class="summary-label">
+              Security
+            </div>
+
+            <div id="securitySummary" class="summary-value">
+              Waiting...
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary environment">
+
+          <div class="summary-icon">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <path d="
+                  M17.5 19H9
+                  a7 7 0 110-14
+                  c3 0 5.5 2 6.5 4.5
+                  A4.5 4.5 0 0117.5 19z
+                " />
+
+            </svg>
+
+          </div>
+
+
+          <div>
+
+            <div class="summary-label">
+              Environment
+            </div>
+
+            <div id="environmentSummary" class="summary-value">
+              Waiting...
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="summary nvr">
+
+          <div class="summary-icon">
+
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+
+              <path d="M8 21h8M12 19v2" />
+
+            </svg>
+
+          </div>
+
+
+          <div>
+
+            <div class="summary-label">
+              NVR
+            </div>
+
+            <div id="nvrSummary" class="summary-value">
+              Waiting...
+            </div>
+
+          </div>
+
+        </div>
+
+
       </div>
+
+
+      <div id="sensorGrid" class="sensor-grid"></div>
+
+
+      <div id="lastUpdate" class="panel-footer">
+        Waiting for telemetry...
+      </div>
+
 
     </section>
 
 
-    <!-- CCTV -->
-    <section class="space-y-3">
+    <!-- ============================================================
+         LIVE CCTV
+         ============================================================ -->
 
-      <div class="flex items-center justify-between">
+    <section class="camera-section">
 
-        <h2 class="text-base font-semibold text-slate-200">
-          Live CCTV
-        </h2>
 
-        <span id="cameraCount" class="text-xs text-slate-500">
-          0 kamera
-        </span>
+      <div class="section-title-row">
 
-      </div>
 
-      <div id="videoGrid" class="
-        grid
-        grid-cols-1
-        gap-4
-        sm:grid-cols-2
-        xl:grid-cols-3
-        2xl:grid-cols-4
-      ">
+        <div>
 
-        <div class="col-span-full flex justify-center py-8">
-          <div class="spinner"></div>
+          <div class="section-title">
+            Live CCTV
+          </div>
+
+          <div class="section-description">
+            Stream hanya aktif saat tombol PLAY ditekan
+          </div>
+
         </div>
 
+
+        <button id="stopAllButton" class="action-button stop" type="button">
+          â–  STOP SEMUA LIVE
+        </button>
+
+
       </div>
 
+
+      <div id="cameraGrid" class="camera-grid"></div>
+
+
     </section>
+
+
+    <!-- ============================================================
+         PLAYBACK
+         ============================================================ -->
+
+    <section class="playback-section">
+
+
+      <div class="section-title-row">
+
+
+        <div>
+
+          <div class="section-title">
+            Playback Recording
+          </div>
+
+          <div class="section-description">
+            Ambil rekaman langsung dari NVR Hikvision
+          </div>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="playback-controls">
+
+
+        <div class="field">
+
+          <label>
+            Camera
+          </label>
+
+          <select id="playbackCamera">
+
+            <option value="">
+              Memuat kamera...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Tanggal
+          </label>
+
+          <input id="playbackDate" type="date">
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Mulai
+          </label>
+
+          <input id="playbackStart" type="time" value="00:00">
+
+        </div>
+
+
+        <div class="field">
+
+          <label>
+            Selesai
+          </label>
+
+          <input id="playbackEnd" type="time" value="23:59">
+
+        </div>
+
+
+      </div>
+
+
+      <div class="playback-actions">
+
+
+        <button id="fullDayButton" type="button" class="action-button">
+          00:00 - 23:59
+        </button>
+
+
+        <button id="playbackPlayButton" type="button" class="action-button primary">
+          â–¶ PLAY RECORD
+        </button>
+
+
+        <button id="playbackStopButton" type="button" class="action-button stop">
+          â–  STOP
+        </button>
+
+
+        <button id="playbackDownloadButton" type="button" class="action-button download">
+          â†“ DOWNLOAD MP4
+        </button>
+
+
+        <div id="playbackStatus" class="playback-status">
+          Ready
+        </div>
+
+
+      </div>
+
+
+      <div class="playback-player">
+
+
+        <video id="playbackVideo" controls playsinline preload="none"></video>
+
+
+        <div id="playbackEmpty" class="playback-empty">
+          Pilih camera, tanggal, dan jam lalu tekan PLAY RECORD
+        </div>
+
+
+      </div>
+
+
+      <div class="playback-note">
+        Playback dan download menggunakan rekaman NVR. Memilih rentang satu hari penuh dapat menghasilkan file yang
+        sangat besar, jadi jangan heran kalau paket data seluler mendadak meminta pensiun.
+      </div>
+
+
+    </section>
+
 
   </main>
 
 
   <script>
 
-    const SENSOR_REFRESH_MS = 1000;
+    /* ============================================================
+       CONFIG
+       ============================================================ */
+
+    const API_STATE =
+      "/api/state";
+
+
+    const API_CAMERAS =
+      "/api/cameras";
+
+
+    const LOGO_URL =
+      "https://app.iotizen.com/api/d/48531bbf-a230-4667-844d-6b539019bc07.png";
+
 
     /*
-     * Jangan start 8 kamera persis bersamaan.
-     * Beri napas sedikit ke FFmpeg / mini PC.
+     * WebRTC lokal.
      */
-    const CAMERA_STAGGER_MS = 700;
+    const MEDIAMTX_WEBRTC_BASE =
+      "http://192.168.1.140:8889";
+
+
+    const SENSOR_REFRESH_MS =
+      1000;
+
+
+    const SENSOR_TIMEOUT_MS =
+      12000;
+
+
+    /* ============================================================
+       GLOBAL
+       ============================================================ */
+
+    let sensorRunning =
+      false;
+
+
+    let sensorTimer =
+      null;
+
+
+    let cameras = [];
 
 
     /*
-    |--------------------------------------------------------------------------
-    | HLS PLAYER STORAGE
-    |--------------------------------------------------------------------------
-    */
-
-    const players = new Map();
-    const restartTimers = new Map();
-
-    let sensorRequestRunning = false;
-    let camerasLoaded = false;
+     * Camera yang benar-benar sedang streaming.
+     */
+    const activeLiveCameras =
+      new Set();
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | SENSOR CONFIGURATION
-    |--------------------------------------------------------------------------
-    */
+    const cameraLoadTimers =
+      new Map();
 
-    const sensorDefinitions = [
 
-      {
-        id: "alarm",
-        label: "Alarm",
-        state: "state_alarm",
-        battery: "battery_alarm"
-      },
+    /* ============================================================
+       SENSOR DEFINITIONS
+       ============================================================ */
 
-      {
-        id: "smoke",
-        label: "Smoke",
-        state: "state_smoke",
-        battery: "battery_smoke"
-      },
-
-      {
-        id: "water_leak",
-        label: "Water Leak",
-        state: "state_water_leak",
-        battery: "battery_water_leak"
-      },
-
-      {
-        id: "panic",
-        label: "Panic",
-        state: "state_panic",
-        battery: "battery_panic"
-      },
-
-      {
-        id: "pir",
-        label: "PIR",
-        state: "state_pir",
-        battery: "battery_pir"
-      },
+    const sensors = [
 
       {
         id: "door",
-        label: "Door",
+        name: "Door Sensor",
         state: "state_door",
-        battery: "battery_door"
+        battery: "battery_door",
+        type: "warning",
+        active: "OPEN",
+        inactive: "CLOSED",
+        icon:
+          `<path d="M6 3h12v18H6zM10 12h.01"/>`
       },
 
+
       {
-        id: "nvr",
-        label: "NVR",
-        state: "state_nvr",
-        battery: null
+        id: "pir",
+        name: "PIR Motion",
+        state: "state_pir",
+        battery: "battery_pir",
+        type: "warning",
+        active: "MOTION",
+        inactive: "CLEAR",
+        icon:
+          `<path d="M13 10V3L4 14h7v7l9-11h-7z"/>`
+      },
+
+
+      {
+        id: "smoke",
+        name: "Smoke Detector",
+        state: "state_smoke",
+        battery: "battery_smoke",
+        type: "danger",
+        active: "SMOKE DETECTED",
+        inactive: "NORMAL",
+        icon:
+          `<path d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"/>`
+      },
+
+
+      {
+        id: "water",
+        name: "Water Leak",
+        state: "state_water_leak",
+        battery: "battery_water_leak",
+        type: "danger",
+        active: "LEAK DETECTED",
+        inactive: "DRY",
+        icon:
+          `<path d="M12 2C12 2 5 10 5 15a7 7 0 0014 0C19 10 12 2 12 2z"/>`
+      },
+
+
+      {
+        id: "panic",
+        name: "Panic Button",
+        state: "state_panic",
+        battery: "battery_panic",
+        type: "danger",
+        active: "TRIGGERED",
+        inactive: "STANDBY",
+        icon:
+          `<path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>`
+      },
+
+
+      {
+        id: "alarm",
+        name: "Alarm Siren",
+        state: "state_alarm",
+        battery: "battery_alarm",
+        type: "danger",
+        active: "SIREN ON",
+        inactive: "OFF",
+        icon:
+          `<path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>`
       }
 
     ];
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | HELPER
-    |--------------------------------------------------------------------------
-    */
+    /* ============================================================
+       FETCH JSON
+       ============================================================ */
 
-    function escapeHtml(value) {
+    async function fetchJSON(
+      url,
+      timeoutMs = 12000
+    ) {
 
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-    }
+      const controller =
+        new AbortController();
 
 
-    async function fetchJSON(url, timeoutMs = 5000) {
-
-      const controller = new AbortController();
-
-      const timer = setTimeout(() => {
-        controller.abort();
-      }, timeoutMs);
+      const timer =
+        setTimeout(
+          () => controller.abort(),
+          timeoutMs
+        );
 
 
       try {
 
-        const response = await fetch(url, {
+        const response =
+          await fetch(
+            url,
+            {
+              cache:
+                "no-store",
 
-          signal: controller.signal,
-
-          /*
-           * Sensor harus realtime.
-           */
-          cache: "no-store"
-
-        });
-
-
-        const data = await response
-          .json()
-          .catch(() => ({}));
+              signal:
+                controller.signal
+            }
+          );
 
 
-        if (!response.ok) {
+        const data =
+          await response
+            .json()
+            .catch(
+              () => ({})
+            );
+
+
+        if (
+          !response.ok
+        ) {
 
           throw new Error(
             data.details ||
@@ -338,320 +2175,191 @@
 
       }
 
-      finally {
-
-        clearTimeout(timer);
-
-      }
-
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | SENSOR
-    |--------------------------------------------------------------------------
-    */
-
-    function normalizeState(value) {
-
-      if (value === true || value === 1) {
-        return "ON";
-      }
-
-      if (value === false || value === 0) {
-        return "OFF";
-      }
-
-
-      const str = String(
-        value ?? "UNKNOWN"
-      )
-        .trim()
-        .toUpperCase();
-
-
-      if (
-        [
-          "TRUE",
-          "ACTIVE",
-          "ALARM",
-          "OPEN",
-          "DETECTED",
-          "WET"
-        ].includes(str)
-      ) {
-        return "ON";
-      }
-
-
-      if (
-        [
-          "FALSE",
-          "INACTIVE",
-          "NORMAL",
-          "CLOSED",
-          "DRY"
-        ].includes(str)
-      ) {
-        return "OFF";
-      }
-
-
-      return str || "UNKNOWN";
-
-    }
-
-
-    function getSensorVisual(sensorId, value) {
-
-      const state = normalizeState(value);
-
-
-      /*
-       * NVR:
-       * ON = bagus
-       */
-      if (sensorId === "nvr") {
+      catch (error) {
 
         if (
-          state === "ON" ||
-          state === "ONLINE"
+          error.name ===
+          "AbortError"
         ) {
 
-          return {
-
-            state: "ONLINE",
-
-            dot: "dot-ok",
-
-            text: "text-emerald-400",
-
-            border: "border-emerald-900/70"
-
-          };
+          throw new Error(
+            `Timeout ${url}`
+          );
 
         }
 
 
-        return {
-
-          state,
-
-          dot: "dot-alert",
-
-          text: "text-red-400",
-
-          border: "border-red-900/70"
-
-        };
+        throw error;
 
       }
 
+      finally {
 
-      /*
-       * Sensor security:
-       *
-       * OFF = kondisi normal / aman
-       * ON  = trigger / alarm
-       */
-      if (state === "OFF") {
-
-        return {
-
-          state: "OFF",
-
-          dot: "dot-ok",
-
-          text: "text-emerald-400",
-
-          border: "border-slate-800"
-
-        };
+        clearTimeout(
+          timer
+        );
 
       }
-
-
-      if (state === "ON") {
-
-        return {
-
-          state: "ON",
-
-          dot: "dot-alert",
-
-          text: "text-red-400",
-
-          border: "border-red-900/70"
-
-        };
-
-      }
-
-
-      return {
-
-        state,
-
-        dot: "dot-idle",
-
-        text: "text-slate-400",
-
-        border: "border-slate-800"
-
-      };
 
     }
 
 
-    function renderSensorCards() {
+    /* ============================================================
+       STATE NORMALIZER
+       ============================================================ */
+
+    function isActive(
+      value
+    ) {
+
+      if (
+        value === true ||
+        value === 1
+      ) {
+
+        return true;
+
+      }
+
+
+      const state =
+        String(
+          value ?? ""
+        )
+          .trim()
+          .toUpperCase();
+
+
+      return [
+
+        "ON",
+        "OPEN",
+        "TRUE",
+        "ACTIVE",
+        "DETECTED",
+        "TRIGGERED",
+        "MOTION",
+        "WET",
+        "ALARM"
+
+      ].includes(
+        state
+      );
+
+    }
+
+
+    /* ============================================================
+       RENDER SENSOR
+       ============================================================ */
+
+    function renderSensors() {
 
       const grid =
-        document.getElementById("sensorGrid");
+        document.getElementById(
+          "sensorGrid"
+        );
 
 
       grid.innerHTML =
-        sensorDefinitions
-          .map(sensor => {
+        sensors.map(
+          sensor => `
 
-            return `
-
-          <article
-            id="sensor-${sensor.id}"
-            class="
-              rounded-xl
-              border border-slate-800
-              bg-slate-900/80
-              p-4
-            "
-          >
-
-            <div
-              class="
-                flex
-                items-center
-                justify-between
-              "
+            <article
+              id="sensor-${sensor.id}"
+              class="sensor-card"
             >
 
-              <span
-                class="
-                  text-xs
-                  font-semibold
-                  uppercase
-                  tracking-wider
-                  text-slate-400
-                "
-              >
-                ${escapeHtml(sensor.label)}
-              </span>
+              <div class="sensor-top">
 
-              <span
-                id="sensor-dot-${sensor.id}"
-                class="status-dot dot-idle"
-              ></span>
+                <div class="sensor-icon">
 
-            </div>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+
+                    ${sensor.icon}
+
+                  </svg>
+
+                </div>
 
 
-            <div
-              class="
-                mt-3
-                flex
-                items-end
-                justify-between
-                gap-3
-              "
-            >
+                <div
+                  id="battery-${sensor.id}"
+                  class="battery"
+                >
+                  --%
+                </div>
 
-              <div
-                id="sensor-state-${sensor.id}"
-                class="
-                  text-xl
-                  font-bold
-                  text-slate-400
-                "
-              >
-                --
               </div>
 
 
-              ${sensor.battery
+              <div>
 
-                ? `
+                <div class="sensor-name">
 
-                  <div class="text-right">
+                  ${sensor.name}
 
-                    <div
-                      class="
-                        text-[10px]
-                        uppercase
-                        text-slate-600
-                      "
-                    >
-                      Battery
-                    </div>
+                </div>
 
-                    <div
-                      id="sensor-battery-${sensor.id}"
-                      class="
-                        text-sm
-                        font-semibold
-                        text-slate-300
-                      "
-                    >
-                      --
-                    </div>
 
-                  </div>
+                <div class="sensor-state">
 
-                `
+                  <span
+                    class="sensor-state-dot"
+                  ></span>
 
-                : `
+                  <span
+                    id="state-${sensor.id}"
+                  >
+                    --
+                  </span>
 
-                  <div class="text-right">
+                </div>
 
-                    <div
-                      class="
-                        text-[10px]
-                        uppercase
-                        text-slate-600
-                      "
-                    >
-                      Cameras
-                    </div>
+              </div>
 
-                    <div
-                      id="sensor-camera-count-${sensor.id}"
-                      class="
-                        text-sm
-                        font-semibold
-                        text-slate-300
-                      "
-                    >
-                      --
-                    </div>
+            </article>
 
-                  </div>
-
-                `
-              }
-
-            </div>
-
-          </article>
-
-        `;
-
-          })
-          .join("");
+          `
+        ).join("");
 
     }
 
 
-    function updateSensorCards(data) {
+    /* ============================================================
+       UPDATE SENSOR
+       ============================================================ */
 
-      for (const sensor of sensorDefinitions) {
+    function updateSensors(
+      data
+    ) {
+
+      let securityAlert =
+        false;
+
+      let securityWarning =
+        false;
+
+      let environmentAlert =
+        false;
+
+
+      for (
+        const sensor of sensors
+      ) {
+
+        const active =
+          isActive(
+            data[
+            sensor.state
+            ]
+          );
+
 
         const card =
           document.getElementById(
@@ -659,99 +2367,145 @@
           );
 
 
-        const dot =
+        const stateElement =
           document.getElementById(
-            `sensor-dot-${sensor.id}`
+            `state-${sensor.id}`
           );
 
 
-        const stateText =
+        const batteryElement =
           document.getElementById(
-            `sensor-state-${sensor.id}`
+            `battery-${sensor.id}`
           );
 
 
         if (
           !card ||
-          !dot ||
-          !stateText
+          !stateElement ||
+          !batteryElement
         ) {
+
           continue;
+
         }
 
 
-        const visual =
-          getSensorVisual(
-            sensor.id,
-            data[sensor.state]
+        card.classList.remove(
+          "warning",
+          "danger"
+        );
+
+
+        if (
+          active
+        ) {
+
+          stateElement.textContent =
+            sensor.active;
+
+
+          card.classList.add(
+            sensor.type
           );
 
 
-        card.className =
-          `
-      rounded-xl
-      border
-      ${visual.border}
-      bg-slate-900/80
-      p-4
-      `;
+          if (
+            sensor.id === "door" ||
+            sensor.id === "pir"
+          ) {
+
+            securityWarning =
+              true;
+
+          }
 
 
-        dot.className =
-          `status-dot ${visual.dot}`;
+          if (
+            sensor.id === "panic" ||
+            sensor.id === "alarm"
+          ) {
+
+            securityAlert =
+              true;
+
+          }
 
 
-        stateText.className =
-          `text-xl font-bold ${visual.text}`;
+          if (
+            sensor.id === "smoke" ||
+            sensor.id === "water"
+          ) {
+
+            environmentAlert =
+              true;
+
+          }
+
+        }
+
+        else {
+
+          stateElement.textContent =
+            sensor.inactive;
+
+        }
 
 
-        stateText.textContent =
-          visual.state;
+        const battery =
+          data[
+          sensor.battery
+          ];
 
 
-        /*
-         * Battery
-         */
-        if (sensor.battery) {
+        if (
+          battery === undefined ||
+          battery === null
+        ) {
 
-          const batteryElement =
-            document.getElementById(
-              `sensor-battery-${sensor.id}`
+          batteryElement.textContent =
+            "--%";
+
+
+          batteryElement
+            .classList
+            .remove(
+              "low"
+            );
+
+        }
+
+        else {
+
+          const level =
+            Number(
+              battery
             );
 
 
-          const battery =
-            data[sensor.battery];
+          batteryElement.textContent =
+            `${battery}%`;
 
 
-          if (batteryElement) {
+          if (
+            Number.isFinite(level) &&
+            level <= 20
+          ) {
 
-            batteryElement.textContent =
-              battery === undefined ||
-                battery === null
+            batteryElement
+              .classList
+              .add(
+                "low"
+              );
 
-                ? "--"
+          }
 
-                : `${battery}%`;
+          else {
 
-
-            if (
-              battery !== undefined &&
-              battery !== null &&
-              Number(battery) <= 20
-            ) {
-
-              batteryElement.className =
-                "text-sm font-semibold text-red-400";
-
-            }
-
-            else {
-
-              batteryElement.className =
-                "text-sm font-semibold text-slate-300";
-
-            }
+            batteryElement
+              .classList
+              .remove(
+                "low"
+              );
 
           }
 
@@ -760,316 +2514,690 @@
       }
 
 
-      /*
-       * Jumlah kamera dari NVR.
-       */
-      const nvrCount =
+      const security =
         document.getElementById(
-          "sensor-camera-count-nvr"
+          "securitySummary"
         );
 
 
-      if (nvrCount) {
+      if (
+        securityAlert
+      ) {
 
-        nvrCount.textContent =
-          data.nvr_camera_count ?? "--";
+        security.textContent =
+          "Alert";
+
+        security.style.color =
+          "#dc2626";
+
+      }
+
+      else if (
+        securityWarning
+      ) {
+
+        security.textContent =
+          "Activity Detected";
+
+        security.style.color =
+          "#d97706";
+
+      }
+
+      else {
+
+        security.textContent =
+          "Secure";
+
+        security.style.color =
+          "#16a34a";
 
       }
 
 
-      /*
-       * API status.
-       */
-      const apiStatus =
+      const environment =
         document.getElementById(
-          "apiStatus"
+          "environmentSummary"
         );
 
 
-      apiStatus.textContent =
-        "ONLINE";
+      if (
+        environmentAlert
+      ) {
+
+        environment.textContent =
+          "Alert";
+
+        environment.style.color =
+          "#dc2626";
+
+      }
+
+      else {
+
+        environment.textContent =
+          "Normal";
+
+        environment.style.color =
+          "#16a34a";
+
+      }
 
 
-      apiStatus.className =
-        "ml-2 font-semibold text-emerald-400";
+      const nvr =
+        document.getElementById(
+          "nvrSummary"
+        );
 
 
-      /*
-       * Timestamp.
-       */
-      const bridgeTimestamp =
-        data.timestamp
-          ? ` | Bridge: ${data.timestamp}`
-          : "";
+      const nvrState =
+        String(
+          data.state_nvr ??
+          "UNKNOWN"
+        )
+          .trim()
+          .toUpperCase();
+
+
+      const cameraCount =
+        data.nvr_camera_count ??
+        "--";
+
+
+      if (
+        nvrState === "ON" ||
+        nvrState === "ONLINE"
+      ) {
+
+        nvr.textContent =
+          `Online Â· ${cameraCount} CAM`;
+
+        nvr.style.color =
+          "#16a34a";
+
+      }
+
+      else {
+
+        nvr.textContent =
+          "Offline";
+
+        nvr.style.color =
+          "#dc2626";
+
+      }
+
+
+      document
+        .getElementById(
+          "liveDot"
+        )
+        .classList
+        .add(
+          "online"
+        );
+
+
+      document.getElementById(
+        "liveText"
+      ).textContent =
+        "Live";
+
+
+      let timestamp =
+        data.timestamp;
+
+
+      if (
+        timestamp
+      ) {
+
+        const parsed =
+          new Date(
+            timestamp
+          );
+
+
+        if (
+          !Number.isNaN(
+            parsed.getTime()
+          )
+        ) {
+
+          timestamp =
+            parsed.toLocaleString(
+              "id-ID",
+              {
+                hour12: false
+              }
+            );
+
+        }
+
+      }
 
 
       document.getElementById(
         "lastUpdate"
       ).textContent =
-        `Update: ${new Date()
-          .toLocaleTimeString("id-ID")
-        }${bridgeTimestamp}`;
+        timestamp
+          ? `Last update: ${timestamp}`
+          : "Telemetry received";
 
     }
 
 
+    /* ============================================================
+       SENSOR POLLING
+       ============================================================ */
+
     async function pollSensors() {
 
-      /*
-       * Jangan bikin request menumpuk
-       * jika request sebelumnya belum selesai.
-       */
-      if (sensorRequestRunning) {
+      if (
+        sensorRunning
+      ) {
+
         return;
+
       }
 
 
-      sensorRequestRunning = true;
+      sensorRunning =
+        true;
 
 
       try {
 
         const data =
           await fetchJSON(
-            "/api/state",
-            4000
+            API_STATE,
+            SENSOR_TIMEOUT_MS
           );
 
 
-        updateSensorCards(data);
+        updateSensors(
+          data
+        );
 
       }
 
       catch (error) {
 
-        console.error(
-          "[SENSOR ERROR]",
-          error
+        console.warn(
+          "[SENSOR]",
+          error.message
         );
 
 
-        const apiStatus =
-          document.getElementById(
-            "apiStatus"
+        document
+          .getElementById(
+            "liveDot"
+          )
+          .classList
+          .remove(
+            "online"
           );
 
 
-        apiStatus.textContent =
-          "OFFLINE";
-
-
-        apiStatus.className =
-          "ml-2 font-semibold text-red-400";
-
-
         document.getElementById(
-          "lastUpdate"
+          "liveText"
         ).textContent =
-          `Sensor error: ${error.message}`;
+          "Offline";
 
       }
 
       finally {
 
-        sensorRequestRunning = false;
+        sensorRunning =
+          false;
 
       }
 
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CAMERA
-    |--------------------------------------------------------------------------
-    */
+    /* ============================================================
+       CAMERA PATH
+       ============================================================ */
 
-    function getCameraId(camera, index) {
+    function getCameraPath(
+      camera,
+      index
+    ) {
 
-      /*
-       * Pakai ID backend kalau memang formatnya:
-       *
-       * camera_1
-       * camera_2
-       * dst.
-       */
-      const explicitId =
-        camera?.id ||
-        camera?.camera_id ||
-        camera?.cameraId ||
-        camera?.key;
+      const candidates = [
+
+        camera?.path,
+        camera?.stream_path,
+        camera?.streamPath,
+        camera?.id,
+        camera?.camera_id,
+        camera?.cameraId,
+        camera?.name,
+        camera?.label
+
+      ];
+
+
+      for (
+        const value of candidates
+      ) {
+
+        if (
+          value === undefined ||
+          value === null
+        ) {
+
+          continue;
+
+        }
+
+
+        const text =
+          String(value)
+            .trim();
+
+
+        let match =
+          text.match(
+            /^cam(\d+)$/i
+          );
+
+
+        if (
+          match
+        ) {
+
+          return (
+            `cam${Number(match[1])}`
+          );
+
+        }
+
+
+        match =
+          text.match(
+            /camera[_\s-]?0*(\d+)/i
+          );
+
+
+        if (
+          match
+        ) {
+
+          return (
+            `cam${Number(match[1])}`
+          );
+
+        }
+
+      }
+
+
+      const channel =
+        Number(
+          camera?.channel ??
+          camera?.rtsp_channel ??
+          camera?.rtspChannel
+        );
 
 
       if (
-        explicitId &&
-        /^camera_\d+$/i.test(
-          String(explicitId)
-        )
+        Number.isFinite(channel)
       ) {
 
-        return String(
-          explicitId
-        ).toLowerCase();
+        if (
+          channel >= 100
+        ) {
+
+          return (
+            `cam${Math.floor(
+              channel / 100
+            )}`
+          );
+
+        }
+
+
+        if (
+          channel > 0
+        ) {
+
+          return (
+            `cam${channel}`
+          );
+
+        }
 
       }
 
 
-      /*
-       * Jangan gunakan channel Hikvision 101,
-       * 201, 301 sebagai nama folder HLS.
-       */
-      return `camera_${index + 1}`;
-
-    }
-
-
-    function getCameraName(camera, index) {
-
       return (
-        camera?.name ||
-        camera?.label ||
-        `Camera ${index + 1}`
+        `cam${index + 1}`
       );
 
     }
 
+
+    /* ============================================================
+       CAMERA NUMBER
+       ============================================================ */
+
+    function getCameraNumber(
+      camera,
+      index
+    ) {
+
+      const path =
+        getCameraPath(
+          camera,
+          index
+        );
+
+
+      return Number(
+        path.replace(
+          /^cam/i,
+          ""
+        )
+      ) || (
+          index + 1
+        );
+
+    }
+
+
+    /* ============================================================
+       CAMERA STREAM URL
+       ============================================================ */
 
     function getCameraStreamUrl(
       camera,
       index
     ) {
 
+      const path =
+        getCameraPath(
+          camera,
+          index
+        );
+
+
       return (
-        `/api/hls/` +
-        `${getCameraId(camera, index)}` +
-        `/index.m3u8`
+
+        `${MEDIAMTX_WEBRTC_BASE}` +
+
+        `/${path}/` +
+
+        `?autoplay=true` +
+
+        `&muted=true` +
+
+        `&controls=false` +
+
+        `&playsinline=true`
+
       );
 
     }
 
 
-    function updateCameraStatus(
-      index,
-      type,
-      message = ""
-    ) {
+    /* ============================================================
+       RENDER CAMERA
+       ============================================================ */
 
-      const dot =
+    function renderCameraCards() {
+
+      const grid =
         document.getElementById(
-          `camera-dot-${index}`
+          "cameraGrid"
         );
 
 
-      const label =
-        document.getElementById(
-          `camera-label-${index}`
-        );
+      grid.innerHTML =
+        cameras.map(
+          (
+            camera,
+            index
+          ) => {
+
+            const number =
+              getCameraNumber(
+                camera,
+                index
+              );
 
 
-      const messageElement =
-        document.getElementById(
-          `camera-message-${index}`
-        );
+            const streamUrl =
+              getCameraStreamUrl(
+                camera,
+                index
+              );
 
 
-      if (
-        !dot ||
-        !label
-      ) {
-        return;
-      }
+            return `
+
+              <article
+                class="camera-card"
+                id="camera-card-${index}"
+              >
 
 
-      const statusMap = {
-
-        loading: {
-
-          dot: "dot-warn",
-
-          text: "text-amber-400",
-
-          label: "LOADING"
-
-        },
-
-        live: {
-
-          dot: "dot-ok",
-
-          text: "text-emerald-400",
-
-          label: "LIVE"
-
-        },
-
-        retry: {
-
-          dot: "dot-warn",
-
-          text: "text-amber-400",
-
-          label: "RETRY"
-
-        },
-
-        error: {
-
-          dot: "dot-alert",
-
-          text: "text-red-400",
-
-          label: "ERROR"
-
-        }
-
-      };
+                <div class="camera-header">
 
 
-      const config =
-        statusMap[type] ||
-        {
+                  <div class="camera-brand">
 
-          dot: "dot-idle",
+                    <img
+                      src="${LOGO_URL}"
+                      alt="Pegadaian"
+                    >
 
-          text: "text-slate-400",
-
-          label: "IDLE"
-
-        };
+                  </div>
 
 
-      dot.className =
-        `status-dot ${config.dot}`;
+                  <div class="camera-right">
 
 
-      label.className =
-        `
-    text-[10px]
-    font-bold
-    tracking-widest
-    ${config.text}
-    `;
+                    <span
+                      id="camera-status-${index}"
+                      class="camera-status"
+                    >
+                      IDLE
+                    </span>
 
 
-      label.textContent =
-        config.label;
+                    <span class="camera-label">
+
+                      CAM ${number}
+
+                    </span>
 
 
-      if (messageElement) {
+                    <button
+                      id="camera-toggle-${index}"
+                      class="camera-button"
+                      type="button"
+                      data-index="${index}"
+                    >
+                      â–¶ PLAY
+                    </button>
 
-        messageElement.textContent =
-          message;
 
-      }
+                    <button
+                      id="camera-fullscreen-${index}"
+                      class="fullscreen-button"
+                      type="button"
+                      data-fullscreen="${index}"
+                      disabled
+                      title="Fullscreen"
+                    >
+
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+
+                        <path
+                          d="
+                            M8 3H5
+                            a2 2 0 00-2 2v3
+
+                            M16 3h3
+                            a2 2 0 012 2v3
+
+                            M8 21H5
+                            a2 2 0 01-2-2v-3
+
+                            M16 21h3
+                            a2 2 0 002-2v-3
+                          "
+                        />
+
+                      </svg>
+
+                    </button>
+
+
+                  </div>
+
+
+                </div>
+
+
+                <div class="camera-frame">
+
+
+                  <div
+                    id="camera-placeholder-${index}"
+                    class="camera-placeholder"
+                  >
+
+                    <div class="camera-placeholder-icon">
+
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+
+                        <path
+                          d="
+                            M15 10l4.553-2.276
+                            A1 1 0 0121 8.618v6.764
+                            a1 1 0 01-1.447.894
+                            L15 14
+                          "
+                        />
+
+                        <rect
+                          x="3"
+                          y="6"
+                          width="12"
+                          height="12"
+                          rx="2"
+                        />
+
+                      </svg>
+
+                    </div>
+
+
+                    <div>
+
+                      <div class="camera-placeholder-title">
+
+                        CAM ${number}
+
+                      </div>
+
+                      <div class="camera-placeholder-subtitle">
+
+                        Stream tidak aktif Â· hemat data
+
+                      </div>
+
+                    </div>
+
+
+                    <button
+                      type="button"
+                      class="play-big-button"
+                      data-play="${index}"
+                    >
+                      â–¶ PLAY
+                    </button>
+
+
+                  </div>
+
+
+                  <div
+                    id="camera-loading-${index}"
+                    class="camera-loading"
+                  >
+
+                    <div class="loader"></div>
+
+                    <div>
+
+                      Connecting CAM ${number} WebRTC...
+
+                    </div>
+
+                  </div>
+
+
+                  <iframe
+                    id="camera-frame-${index}"
+                    src="about:blank"
+                    data-src="${streamUrl}"
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    scrolling="no"
+                  ></iframe>
+
+
+                </div>
+
+
+              </article>
+
+            `;
+
+          }
+        ).join("");
+
+
+      bindCameraButtons();
 
     }
 
 
-    function showVideo(index) {
+    /* ============================================================
+       PLAY CAMERA
+       ============================================================ */
 
-      const video =
+    function playCamera(
+      index
+    ) {
+
+      if (
+        activeLiveCameras.has(
+          index
+        )
+      ) {
+
+        return;
+
+      }
+
+
+      const frame =
         document.getElementById(
-          `video-${index}`
+          `camera-frame-${index}`
         );
 
 
@@ -1079,472 +3207,503 @@
         );
 
 
-      if (placeholder) {
-
-        placeholder.classList.add(
-          "hidden"
+      const loading =
+        document.getElementById(
+          `camera-loading-${index}`
         );
 
-      }
 
-
-      if (video) {
-
-        video.classList.remove(
-          "hidden"
+      const status =
+        document.getElementById(
+          `camera-status-${index}`
         );
 
-      }
 
-    }
-
-
-    function destroyCameraPlayer(index) {
-
-      const player =
-        players.get(index);
+      const toggle =
+        document.getElementById(
+          `camera-toggle-${index}`
+        );
 
 
-      if (player) {
-
-        try {
-
-          player.destroy();
-
-        }
-
-        catch (_) {
-        }
+      const fullscreen =
+        document.getElementById(
+          `camera-fullscreen-${index}`
+        );
 
 
-        players.delete(index);
-
-      }
-
-    }
-
-
-    function restartCamera(
-      camera,
-      index,
-      delay = 3000
-    ) {
-
-      /*
-       * Jangan bikin 20 timer restart
-       * untuk kamera yang sama.
-       */
-      if (
-        restartTimers.has(index)
-      ) {
-
-        return;
-
-      }
-
-
-      destroyCameraPlayer(index);
-
-
-      const timer =
-        setTimeout(() => {
-
-          restartTimers.delete(index);
-
-          startCamera(
-            camera,
-            index
-          );
-
-        }, delay);
-
-
-      restartTimers.set(
-        index,
-        timer
+      activeLiveCameras.add(
+        index
       );
 
+
+      placeholder.style.display =
+        "none";
+
+
+      loading.style.display =
+        "flex";
+
+
+      frame.style.display =
+        "block";
+
+
+      status.textContent =
+        "CONNECTING";
+
+
+      status.className =
+        "camera-status connecting";
+
+
+      toggle.textContent =
+        "â–  STOP";
+
+
+      toggle.classList.add(
+        "playing"
+      );
+
+
+      fullscreen.disabled =
+        false;
+
+
+      frame.onload =
+        () => {
+
+          if (
+            !activeLiveCameras.has(
+              index
+            )
+          ) {
+
+            return;
+
+          }
+
+
+          const oldTimer =
+            cameraLoadTimers.get(
+              index
+            );
+
+
+          if (
+            oldTimer
+          ) {
+
+            clearTimeout(
+              oldTimer
+            );
+
+          }
+
+
+          const timer =
+            setTimeout(
+              () => {
+
+                if (
+                  !activeLiveCameras.has(
+                    index
+                  )
+                ) {
+
+                  return;
+
+                }
+
+
+                loading.style.display =
+                  "none";
+
+
+                status.textContent =
+                  "LIVE";
+
+
+                status.className =
+                  "camera-status live";
+
+              },
+              700
+            );
+
+
+          cameraLoadTimers.set(
+            index,
+            timer
+          );
+
+        };
+
+
+      /*
+       * INI titik stream benar-benar dimulai.
+       *
+       * Sebelum tombol PLAY ditekan,
+       * iframe hanya about:blank.
+       */
+      frame.src =
+        frame.dataset.src;
+
     }
 
 
-    function startCamera(
-      camera,
+    /* ============================================================
+       STOP CAMERA
+       ============================================================ */
+
+    function stopCamera(
       index
     ) {
 
-      const video =
+      const frame =
         document.getElementById(
-          `video-${index}`
+          `camera-frame-${index}`
         );
 
 
-      if (!video) {
-        return;
-      }
+      const placeholder =
+        document.getElementById(
+          `camera-placeholder-${index}`
+        );
 
 
-      /*
-       * Kalau player sudah hidup,
-       * jangan dibuat lagi.
-       */
-      if (
-        players.has(index)
-      ) {
-
-        return;
-
-      }
+      const loading =
+        document.getElementById(
+          `camera-loading-${index}`
+        );
 
 
-      const streamUrl =
-        getCameraStreamUrl(
-          camera,
+      const status =
+        document.getElementById(
+          `camera-status-${index}`
+        );
+
+
+      const toggle =
+        document.getElementById(
+          `camera-toggle-${index}`
+        );
+
+
+      const fullscreen =
+        document.getElementById(
+          `camera-fullscreen-${index}`
+        );
+
+
+      const timer =
+        cameraLoadTimers.get(
           index
         );
 
 
-      console.log(
-        `[CAMERA ${index + 1}]`,
-        streamUrl
-      );
-
-
-      updateCameraStatus(
-        index,
-        "loading",
-        "Menghubungkan stream..."
-      );
-
-
-      /*
-       * Chrome / Firefox / Edge.
-       */
       if (
-        window.Hls &&
-        Hls.isSupported()
+        timer
       ) {
 
-        const hls =
-          new Hls({
-
-            enableWorker: true,
-
-            /*
-             * CCTV live.
-             */
-            lowLatencyMode: true,
-
-            /*
-             * Jaga dekat live edge.
-             */
-            liveSyncDurationCount: 2,
-
-            liveMaxLatencyDurationCount: 5,
-
-            /*
-             * Jangan menyimpan buffer besar.
-             */
-            maxBufferLength: 6,
-
-            maxMaxBufferLength: 12,
-
-            backBufferLength: 0,
-
-            maxBufferHole: 0.5,
-
-            /*
-             * Retry bawaan HLS.
-             */
-            manifestLoadingMaxRetry: 5,
-
-            manifestLoadingRetryDelay: 1000,
-
-            levelLoadingMaxRetry: 5,
-
-            fragLoadingMaxRetry: 5
-
-          });
-
-
-        players.set(
-          index,
-          hls
+        clearTimeout(
+          timer
         );
 
 
-        hls.loadSource(
-          streamUrl
+        cameraLoadTimers.delete(
+          index
         );
-
-
-        hls.attachMedia(
-          video
-        );
-
-
-        /*
-         * Manifest sudah tersedia.
-         */
-        hls.on(
-          Hls.Events.MANIFEST_PARSED,
-          () => {
-
-            console.log(
-              `[CAMERA ${index + 1}] LIVE`
-            );
-
-
-            showVideo(index);
-
-
-            updateCameraStatus(
-              index,
-              "live",
-              ""
-            );
-
-
-            video
-              .play()
-              .catch(() => { });
-
-          }
-        );
-
-
-        /*
-         * Kalau video benar-benar bergerak.
-         */
-        video.addEventListener(
-          "playing",
-          () => {
-
-            updateCameraStatus(
-              index,
-              "live",
-              ""
-            );
-
-          }
-        );
-
-
-        /*
-         * HLS error.
-         */
-        hls.on(
-          Hls.Events.ERROR,
-          (
-            event,
-            data
-          ) => {
-
-            if (!data.fatal) {
-              return;
-            }
-
-
-            console.warn(
-              `[CAMERA ${index + 1}]`,
-              data.type,
-              data.details
-            );
-
-
-            /*
-             * Network error.
-             *
-             * Biasanya playlist belum dibuat
-             * oleh bridge / FFmpeg.
-             */
-            if (
-              data.type ===
-              Hls.ErrorTypes.NETWORK_ERROR
-            ) {
-
-              updateCameraStatus(
-                index,
-                "retry",
-                "Menunggu stream..."
-              );
-
-
-              /*
-               * Restart player secara terkontrol.
-               */
-              restartCamera(
-                camera,
-                index,
-                2500
-              );
-
-
-              return;
-
-            }
-
-
-            /*
-             * Media decoder error.
-             */
-            if (
-              data.type ===
-              Hls.ErrorTypes.MEDIA_ERROR
-            ) {
-
-              updateCameraStatus(
-                index,
-                "retry",
-                "Recover media..."
-              );
-
-
-              try {
-
-                hls.recoverMediaError();
-
-              }
-
-              catch (_) {
-
-                restartCamera(
-                  camera,
-                  index,
-                  2500
-                );
-
-              }
-
-
-              return;
-
-            }
-
-
-            /*
-             * Unknown fatal error.
-             */
-            updateCameraStatus(
-              index,
-              "error",
-              "Restart stream..."
-            );
-
-
-            restartCamera(
-              camera,
-              index,
-              3000
-            );
-
-          }
-        );
-
-
-        return;
 
       }
 
 
-      /*
-       * Safari native HLS.
-       */
-      if (
-        video.canPlayType(
-          "application/vnd.apple.mpegurl"
-        )
-      ) {
-
-        video.src =
-          streamUrl;
-
-
-        video.addEventListener(
-          "loadedmetadata",
-          () => {
-
-            showVideo(index);
-
-
-            updateCameraStatus(
-              index,
-              "live",
-              ""
-            );
-
-
-            video
-              .play()
-              .catch(() => { });
-
-          },
-          {
-            once: true
-          }
-        );
-
-
-        video.addEventListener(
-          "error",
-          () => {
-
-            updateCameraStatus(
-              index,
-              "retry",
-              "Retry stream..."
-            );
-
-
-            setTimeout(
-              () => {
-
-                video.load();
-
-              },
-              2500
-            );
-
-          }
-        );
-
-
-        return;
-
-      }
-
-
-      updateCameraStatus(
-        index,
-        "error",
-        "Browser tidak mendukung HLS"
+      activeLiveCameras.delete(
+        index
       );
+
+
+      /*
+       * about:blank mematikan page MediaMTX,
+       * sehingga PeerConnection WebRTC ikut ditutup.
+       */
+      frame.src =
+        "about:blank";
+
+
+      frame.style.display =
+        "none";
+
+
+      loading.style.display =
+        "none";
+
+
+      placeholder.style.display =
+        "flex";
+
+
+      status.textContent =
+        "IDLE";
+
+
+      status.className =
+        "camera-status";
+
+
+      toggle.textContent =
+        "â–¶ PLAY";
+
+
+      toggle.classList.remove(
+        "playing"
+      );
+
+
+      fullscreen.disabled =
+        true;
 
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | LOAD CAMERA LIST
-    |--------------------------------------------------------------------------
-    */
+    /* ============================================================
+       TOGGLE CAMERA
+       ============================================================ */
 
-    async function loadCameras() {
+    function toggleCamera(
+      index
+    ) {
 
-      /*
-       * Ini yang paling penting.
-       *
-       * loadCameras cuma boleh jalan sekali.
-       */
-      if (camerasLoaded) {
+      if (
+        activeLiveCameras.has(
+          index
+        )
+      ) {
+
+        stopCamera(
+          index
+        );
+
+      }
+
+      else {
+
+        playCamera(
+          index
+        );
+
+      }
+
+    }
+
+
+    /* ============================================================
+       STOP ALL
+       ============================================================ */
+
+    function stopAllLive() {
+
+      for (
+        const index of
+        Array.from(
+          activeLiveCameras
+        )
+      ) {
+
+        stopCamera(
+          index
+        );
+
+      }
+
+    }
+
+
+    /* ============================================================
+       FULLSCREEN
+       ============================================================ */
+
+    async function toggleFullscreen(
+      index
+    ) {
+
+      if (
+        !activeLiveCameras.has(
+          index
+        )
+      ) {
 
         return;
 
       }
 
 
+      const card =
+        document.getElementById(
+          `camera-card-${index}`
+        );
+
+
+      try {
+
+        if (
+          document.fullscreenElement
+        ) {
+
+          await document
+            .exitFullscreen();
+
+        }
+
+        else {
+
+          await card
+            .requestFullscreen();
+
+        }
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "[FULLSCREEN]",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* ============================================================
+       BIND CAMERA BUTTONS
+       ============================================================ */
+
+    function bindCameraButtons() {
+
+      document
+        .querySelectorAll(
+          "[data-play]"
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                playCamera(
+                  Number(
+                    button.dataset.play
+                  )
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+      document
+        .querySelectorAll(
+          ".camera-button[data-index]"
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                toggleCamera(
+                  Number(
+                    button.dataset.index
+                  )
+                );
+
+              }
+            );
+
+          }
+        );
+
+
+      document
+        .querySelectorAll(
+          "[data-fullscreen]"
+        )
+        .forEach(
+          button => {
+
+            button.addEventListener(
+              "click",
+              () => {
+
+                toggleFullscreen(
+                  Number(
+                    button.dataset.fullscreen
+                  )
+                );
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+    /* ============================================================
+       PLAYBACK CAMERA SELECT
+       ============================================================ */
+
+    function updatePlaybackCameraList() {
+
+      const select =
+        document.getElementById(
+          "playbackCamera"
+        );
+
+
+      select.innerHTML =
+        cameras.map(
+          (
+            camera,
+            index
+          ) => {
+
+            const number =
+              getCameraNumber(
+                camera,
+                index
+              );
+
+
+            return `
+
+              <option value="${number}">
+                CAM ${number}
+              </option>
+
+            `;
+
+          }
+        ).join("");
+
+    }
+
+
+    /* ============================================================
+       LOAD CAMERA LIST
+       ============================================================ */
+
+    async function loadCameras() {
+
       const grid =
         document.getElementById(
-          "videoGrid"
+          "cameraGrid"
         );
 
 
@@ -1552,13 +3711,15 @@
 
         const payload =
           await fetchJSON(
-            "/api/cameras",
-            6000
+            API_CAMERAS,
+            12000
           );
 
 
-        const cameras =
-          Array.isArray(payload)
+        cameras =
+          Array.isArray(
+            payload
+          )
 
             ? payload
 
@@ -1571,36 +3732,27 @@
               : [];
 
 
-        document.getElementById(
-          "cameraCount"
-        ).textContent =
-          `${cameras.length} kamera`;
-
-
         if (
           cameras.length === 0
         ) {
 
-          grid.innerHTML = `
+          grid.innerHTML =
+            `
 
-        <div
-          class="
-            col-span-full
-            rounded-xl
-            border border-slate-800
-            bg-slate-900
-            p-4
-            text-sm
-            text-slate-400
-          "
-        >
+              <div
+                style="
+                  padding:20px;
+                  background:#fff;
+                  border:1px solid #e2e8f0;
+                  border-radius:8px;
+                "
+              >
 
-          Tidak ada kamera
-          dari /api/cameras.
+                Tidak ada kamera.
 
-        </div>
+              </div>
 
-      `;
+            `;
 
 
           return;
@@ -1609,335 +3761,631 @@
 
 
         /*
-         * Setelah berhasil mendapat daftar,
-         * jangan fetch ulang terus menerus.
+         * HANYA membuat card.
+         *
+         * Tidak ada stream yang dijalankan.
          */
-        camerasLoaded = true;
+        renderCameraCards();
 
 
-        grid.innerHTML =
-          cameras
-            .map(
-              (
-                camera,
-                index
-              ) => {
-
-                const cameraId =
-                  getCameraId(
-                    camera,
-                    index
-                  );
-
-
-                const cameraName =
-                  getCameraName(
-                    camera,
-                    index
-                  );
-
-
-                return `
-
-              <article
-                class="
-                  overflow-hidden
-                  rounded-xl
-                  border border-slate-800
-                  bg-slate-900
-                  shadow-lg
-                "
-              >
-
-                <div
-                  class="
-                    flex
-                    items-center
-                    justify-between
-                    gap-3
-                    px-4 py-3
-                  "
-                >
-
-                  <div class="min-w-0">
-
-                    <div
-                      class="
-                        truncate
-                        text-sm
-                        font-semibold
-                        text-slate-200
-                      "
-                    >
-                      ${escapeHtml(cameraName)}
-                    </div>
-
-
-                    <div
-                      class="
-                        mt-1
-                        text-[10px]
-                        text-slate-600
-                      "
-                    >
-                      ${escapeHtml(cameraId)}
-                    </div>
-
-                  </div>
-
-
-                  <div
-                    class="
-                      flex
-                      items-center
-                      gap-2
-                    "
-                  >
-
-                    <span
-                      id="camera-dot-${index}"
-                      class="
-                        status-dot
-                        dot-warn
-                      "
-                    ></span>
-
-                    <span
-                      id="camera-label-${index}"
-                      class="
-                        text-[10px]
-                        font-bold
-                        tracking-widest
-                        text-amber-400
-                      "
-                    >
-                      LOADING
-                    </span>
-
-                  </div>
-
-                </div>
-
-
-                <div
-                  class="
-                    relative
-                    aspect-video
-                    bg-black
-                  "
-                >
-
-                  <div
-                    id="camera-placeholder-${index}"
-                    class="
-                      absolute
-                      inset-0
-                      flex
-                      flex-col
-                      items-center
-                      justify-center
-                      gap-3
-                      text-slate-500
-                    "
-                  >
-
-                    <div class="spinner"></div>
-
-
-                    <div
-                      id="camera-message-${index}"
-                      class="
-                        px-4
-                        text-center
-                        text-[11px]
-                      "
-                    >
-                      Menyiapkan stream...
-                    </div>
-
-                  </div>
-
-
-                  <video
-                    id="video-${index}"
-
-                    class="
-                      video-stream
-                      hidden
-                    "
-
-                    autoplay
-
-                    muted
-
-                    playsinline
-
-                    controls
-
-                    preload="none"
-                  ></video>
-
-                </div>
-
-              </article>
-
-            `;
-
-              }
-            )
-            .join("");
-
-
-        /*
-         * Start kamera secara bertahap.
-         */
-        for (
-          let index = 0;
-          index < cameras.length;
-          index++
-        ) {
-
-          startCamera(
-            cameras[index],
-            index
-          );
-
-
-          if (
-            index <
-            cameras.length - 1
-          ) {
-
-            await new Promise(
-              resolve =>
-                setTimeout(
-                  resolve,
-                  CAMERA_STAGGER_MS
-                )
-            );
-
-          }
-
-        }
+        updatePlaybackCameraList();
 
       }
 
       catch (error) {
 
         console.error(
-          "[CAMERA LIST ERROR]",
+          "[CAMERA]",
           error
         );
 
 
-        grid.innerHTML = `
+        grid.innerHTML =
+          `
 
-      <div
-        class="
-          col-span-full
-          rounded-xl
-          border border-red-900/70
-          bg-red-950/30
-          p-4
-          text-sm
-          text-red-300
-        "
-      >
+            <div
+              style="
+                padding:20px;
+                background:#fef2f2;
+                color:#dc2626;
+                border:1px solid #fecaca;
+                border-radius:8px;
+              "
+            >
 
-        Gagal mengambil kamera:
+              Gagal mengambil kamera:
+              ${error.message}
 
-        ${escapeHtml(
-          error.message
-        )}
+            </div>
 
-      </div>
-
-    `;
+          `;
 
       }
 
     }
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | START DASHBOARD
-    |--------------------------------------------------------------------------
-    */
+    /* ============================================================
+       JAKARTA DATE
+       ============================================================ */
 
-    document.addEventListener(
-      "DOMContentLoaded",
-      async () => {
+    function getJakartaDate() {
+
+      const formatter =
+        new Intl.DateTimeFormat(
+          "en-CA",
+          {
+            timeZone:
+              "Asia/Jakarta",
+
+            year:
+              "numeric",
+
+            month:
+              "2-digit",
+
+            day:
+              "2-digit"
+          }
+        );
+
+
+      const parts =
+        formatter.formatToParts(
+          new Date()
+        );
+
+
+      const values = {};
+
+
+      for (
+        const part of parts
+      ) {
+
+        values[
+          part.type
+        ] =
+          part.value;
+
+      }
+
+
+      return (
+        `${values.year}-` +
+        `${values.month}-` +
+        `${values.day}`
+      );
+
+    }
+
+
+    /* ============================================================
+       PLAYBACK QUERY
+       ============================================================ */
+
+    function getPlaybackQuery() {
+
+      const camera =
+        document.getElementById(
+          "playbackCamera"
+        ).value;
+
+
+      const date =
+        document.getElementById(
+          "playbackDate"
+        ).value;
+
+
+      const start =
+        document.getElementById(
+          "playbackStart"
+        ).value;
+
+
+      const end =
+        document.getElementById(
+          "playbackEnd"
+        ).value;
+
+
+      if (
+        !camera
+      ) {
+
+        throw new Error(
+          "Pilih camera"
+        );
+
+      }
+
+
+      if (
+        !date
+      ) {
+
+        throw new Error(
+          "Pilih tanggal"
+        );
+
+      }
+
+
+      if (
+        !start ||
+        !end
+      ) {
+
+        throw new Error(
+          "Pilih jam mulai dan selesai"
+        );
+
+      }
+
+
+      if (
+        end <= start
+      ) {
+
+        throw new Error(
+          "Jam selesai harus setelah jam mulai"
+        );
+
+      }
+
+
+      return (
+        `camera=${encodeURIComponent(camera)}` +
+        `&date=${encodeURIComponent(date)}` +
+        `&start=${encodeURIComponent(start)}` +
+        `&end=${encodeURIComponent(end)}`
+      );
+
+    }
+
+
+    /* ============================================================
+       STOP PLAYBACK
+       ============================================================ */
+
+    function stopPlayback() {
+
+      const video =
+        document.getElementById(
+          "playbackVideo"
+        );
+
+
+      video.pause();
+
+
+      video.removeAttribute(
+        "src"
+      );
+
+
+      video.load();
+
+
+      document.getElementById(
+        "playbackEmpty"
+      ).style.display =
+        "flex";
+
+
+      document.getElementById(
+        "playbackStatus"
+      ).textContent =
+        "Stopped";
+
+    }
+
+
+    /* ============================================================
+       PLAY RECORDING
+       ============================================================ */
+
+    function playRecording() {
+
+      const status =
+        document.getElementById(
+          "playbackStatus"
+        );
+
+
+      try {
 
         /*
-         * Buat card sensor sekali.
-         */
-        renderSensorCards();
-
-
-        /*
-         * Load data awal.
-         */
-        await pollSensors();
-
-
-        /*
-         * Sensor refresh terus.
+         * Hemat data.
          *
-         * Kamera TIDAK ikut dipanggil.
+         * Saat playback diputar,
+         * semua live CCTV dimatikan.
          */
+        stopAllLive();
+
+
+        stopPlayback();
+
+
+        const query =
+          getPlaybackQuery();
+
+
+        const video =
+          document.getElementById(
+            "playbackVideo"
+          );
+
+
+        const empty =
+          document.getElementById(
+            "playbackEmpty"
+          );
+
+
+        status.textContent =
+          "Memuat recording...";
+
+
+        empty.style.display =
+          "none";
+
+
+        video.src =
+          `/api/playback/stream?${query}` +
+          `&_=${Date.now()}`;
+
+
+        video.load();
+
+
+        video.play()
+          .then(
+            () => {
+
+              status.textContent =
+                "Playback";
+
+            }
+          )
+          .catch(
+            error => {
+
+              /*
+               * Browser mungkin butuh buffer
+               * beberapa saat.
+               */
+              console.log(
+                "[PLAYBACK PLAY]",
+                error.message
+              );
+
+            }
+          );
+
+      }
+
+      catch (error) {
+
+        status.textContent =
+          error.message;
+
+      }
+
+    }
+
+
+    /* ============================================================
+       DOWNLOAD RECORDING
+       ============================================================ */
+
+    function downloadRecording() {
+
+      const status =
+        document.getElementById(
+          "playbackStatus"
+        );
+
+
+      try {
+
+        /*
+         * Biar kuota tidak dipakai
+         * live + download bersamaan.
+         */
+        stopAllLive();
+
+
+        const query =
+          getPlaybackQuery();
+
+
+        const camera =
+          document.getElementById(
+            "playbackCamera"
+          ).value;
+
+
+        const date =
+          document.getElementById(
+            "playbackDate"
+          ).value;
+
+
+        const start =
+          document.getElementById(
+            "playbackStart"
+          ).value;
+
+
+        const end =
+          document.getElementById(
+            "playbackEnd"
+          ).value;
+
+
+        const anchor =
+          document.createElement(
+            "a"
+          );
+
+
+        anchor.href =
+          `/api/playback/download?${query}`;
+
+
+        anchor.download =
+          (
+            `CAM${camera}_` +
+            `${date}_` +
+            `${start.replace(":", "")}-` +
+            `${end.replace(":", "")}.mp4`
+          );
+
+
+        document.body.appendChild(
+          anchor
+        );
+
+
+        anchor.click();
+
+
+        anchor.remove();
+
+
+        status.textContent =
+          "Download dimulai";
+
+      }
+
+      catch (error) {
+
+        status.textContent =
+          error.message;
+
+      }
+
+    }
+
+
+    /* ============================================================
+       START
+       ============================================================ */
+
+    async function startDashboard() {
+
+      document.getElementById(
+        "mainLogo"
+      ).src =
+        LOGO_URL;
+
+
+      document.getElementById(
+        "currentDate"
+      ).textContent =
+        new Date()
+          .toLocaleDateString(
+            "id-ID",
+            {
+              day: "2-digit",
+              month: "short",
+              year: "numeric"
+            }
+          );
+
+
+      /*
+       * Default playback hari ini.
+       */
+      document.getElementById(
+        "playbackDate"
+      ).value =
+        getJakartaDate();
+
+
+      renderSensors();
+
+
+      await pollSensors();
+
+
+      sensorTimer =
         setInterval(
           pollSensors,
           SENSOR_REFRESH_MS
         );
 
 
-        /*
-         * Kamera hanya di-load sekali.
-         */
-        loadCameras();
+      /*
+       * Camera card dibuat,
+       * TAPI STREAM TIDAK DIMULAI.
+       */
+      await loadCameras();
 
-      }
+
+      /* ========================================================
+         BUTTONS
+         ======================================================== */
+
+      document.getElementById(
+        "stopAllButton"
+      ).addEventListener(
+        "click",
+        stopAllLive
+      );
+
+
+      document.getElementById(
+        "fullDayButton"
+      ).addEventListener(
+        "click",
+        () => {
+
+          document.getElementById(
+            "playbackStart"
+          ).value =
+            "00:00";
+
+
+          document.getElementById(
+            "playbackEnd"
+          ).value =
+            "23:59";
+
+        }
+      );
+
+
+      document.getElementById(
+        "playbackPlayButton"
+      ).addEventListener(
+        "click",
+        playRecording
+      );
+
+
+      document.getElementById(
+        "playbackStopButton"
+      ).addEventListener(
+        "click",
+        stopPlayback
+      );
+
+
+      document.getElementById(
+        "playbackDownloadButton"
+      ).addEventListener(
+        "click",
+        downloadRecording
+      );
+
+
+      const playbackVideo =
+        document.getElementById(
+          "playbackVideo"
+        );
+
+
+      playbackVideo.addEventListener(
+        "playing",
+        () => {
+
+          document.getElementById(
+            "playbackStatus"
+          ).textContent =
+            "Playing";
+
+        }
+      );
+
+
+      playbackVideo.addEventListener(
+        "waiting",
+        () => {
+
+          document.getElementById(
+            "playbackStatus"
+          ).textContent =
+            "Buffering...";
+
+        }
+      );
+
+
+      playbackVideo.addEventListener(
+        "ended",
+        () => {
+
+          document.getElementById(
+            "playbackStatus"
+          ).textContent =
+            "Selesai";
+
+        }
+      );
+
+
+      playbackVideo.addEventListener(
+        "error",
+        () => {
+
+          document.getElementById(
+            "playbackStatus"
+          ).textContent =
+            "Playback gagal / rekaman tidak tersedia";
+
+        }
+      );
+
+    }
+
+
+    document.addEventListener(
+      "DOMContentLoaded",
+      startDashboard
     );
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | CLEANUP
-    |--------------------------------------------------------------------------
-    */
+    /* ============================================================
+       CLEANUP
+       ============================================================ */
 
     window.addEventListener(
       "beforeunload",
       () => {
 
-        for (
-          const player of players.values()
+        if (
+          sensorTimer
         ) {
 
-          try {
-            player.destroy();
-          }
-
-          catch (_) {
-          }
+          clearInterval(
+            sensorTimer
+          );
 
         }
 
 
-        players.clear();
+        stopAllLive();
+
+
+        stopPlayback();
 
 
         for (
-          const timer of restartTimers.values()
+          const timer of
+          cameraLoadTimers.values()
         ) {
 
-          clearTimeout(timer);
+          clearTimeout(
+            timer
+          );
 
         }
 
 
-        restartTimers.clear();
+        cameraLoadTimers.clear();
 
       }
     );

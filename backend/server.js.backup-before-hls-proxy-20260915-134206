@@ -372,9 +372,9 @@ async function proxyJson(
  * Data langsung:
  *
  * mini PC :8090
- *       â†“
+ *       ↓
  * Node dashboard lokal
- *       â†“
+ *       ↓
  * Browser
  */
 function proxyStream(
@@ -1202,68 +1202,6 @@ app.get(
   }
 );
 
-
-/* ============================================================
-   PLAYBACK HLS START
-   ============================================================ */
-
-app.get(
-  "/api/playback/hls/start",
-  (
-    req,
-    res
-  ) => {
-
-    proxyStream(
-      req,
-      res,
-      "/api/playback/hls/start"
-    );
-
-  }
-);
-
-
-/* ============================================================
-   PLAYBACK HLS STOP
-   ============================================================ */
-
-app.get(
-  "/api/playback/hls/stop",
-  (
-    req,
-    res
-  ) => {
-
-    proxyStream(
-      req,
-      res,
-      "/api/playback/hls/stop"
-    );
-
-  }
-);
-
-
-/* ============================================================
-   PLAYBACK HLS FILES
-   ============================================================ */
-
-app.get(
-  "/api/playback/hls/files/{*splat}",
-  (
-    req,
-    res
-  ) => {
-
-    proxyStream(
-      req,
-      res,
-      req.path
-    );
-
-  }
-);
 
 /* ============================================================
    SPA FALLBACK
