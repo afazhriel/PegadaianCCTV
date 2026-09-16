@@ -1818,7 +1818,7 @@
 
 
         <button id="stopAllButton" class="action-button stop" type="button">
-          â–  STOP SEMUA LIVE
+          ■ STOP SEMUA LIVE
         </button>
 
 
@@ -1894,7 +1894,7 @@
             Mulai
           </label>
 
-          <input id="playbackStart" type="time" value="00:00">
+          <input id="playbackStart" type="time" value="" autocomplete="off">
 
         </div>
 
@@ -1905,7 +1905,7 @@
             Selesai
           </label>
 
-          <input id="playbackEnd" type="time" value="23:59">
+          <input id="playbackEnd" type="time" value="" autocomplete="off">
 
         </div>
 
@@ -1916,23 +1916,18 @@
       <div class="playback-actions">
 
 
-        <button id="fullDayButton" type="button" class="action-button">
-          00:00 - 23:59
-        </button>
-
-
         <button id="playbackPlayButton" type="button" class="action-button primary">
-          â–¶ PLAY RECORD
+          ▶ PLAY RECORD
         </button>
 
 
         <button id="playbackStopButton" type="button" class="action-button stop">
-          â–  STOP
+          ■ STOP
         </button>
 
 
         <button id="playbackDownloadButton" type="button" class="action-button download">
-          â†“ DOWNLOAD MP4
+          ↓ DOWNLOAD MP4
         </button>
 
 
@@ -1959,8 +1954,8 @@
 
 
       <div class="playback-note">
-        Playback dan download menggunakan rekaman NVR. Memilih rentang satu hari penuh dapat menghasilkan file yang
-        sangat besar, jadi jangan heran kalau paket data seluler mendadak meminta pensiun.
+        Playback dan download menggunakan rekaman NVR. Tanggal dibatasi ke 7 hari terakhir dan setiap request
+        maksimal 1 jam agar playback tetap stabil dan proses FFmpeg tidak berjalan seharian.
       </div>
 
 
@@ -2001,6 +1996,19 @@
 
     const SENSOR_TIMEOUT_MS =
       12000;
+
+
+    /*
+     * Playback lokal mengikuti retention NVR:
+     * - tanggal: 7 hari terakhir
+     * - durasi: maksimal 1 jam per request
+     */
+    const PLAYBACK_RETENTION_DAYS =
+      7;
+
+
+    const PLAYBACK_MAX_MINUTES =
+      60;
 
 
     /* ============================================================
@@ -2610,7 +2618,7 @@
       ) {
 
         nvr.textContent =
-          `Online Â· ${cameraCount} CAM`;
+          `Online · ${cameraCount} CAM`;
 
         nvr.style.color =
           "#16a34a";
@@ -3020,7 +3028,7 @@
                       type="button"
                       data-index="${index}"
                     >
-                      â–¶ PLAY
+                      ▶ PLAY
                     </button>
 
 
@@ -3116,7 +3124,7 @@
 
                       <div class="camera-placeholder-subtitle">
 
-                        Stream tidak aktif Â· hemat data
+                        Stream tidak aktif · hemat data
 
                       </div>
 
@@ -3128,7 +3136,7 @@
                       class="play-big-button"
                       data-play="${index}"
                     >
-                      â–¶ PLAY
+                      ▶ PLAY
                     </button>
 
 
@@ -3257,7 +3265,7 @@
 
 
       toggle.textContent =
-        "â–  STOP";
+        "■ STOP";
 
 
       toggle.classList.add(
@@ -3451,7 +3459,7 @@
 
 
       toggle.textContent =
-        "â–¶ PLAY";
+        "▶ PLAY";
 
 
       toggle.classList.remove(
@@ -3860,6 +3868,71 @@
     }
 
 
+    function shiftDateString(
+      dateString,
+      deltaDays
+    ) {
+
+      const [
+        year,
+        month,
+        day
+      ] =
+        dateString
+          .split("-")
+          .map(Number);
+
+
+      const date =
+        new Date(
+          Date.UTC(
+            year,
+            month - 1,
+            day
+          )
+        );
+
+
+      date.setUTCDate(
+        date.getUTCDate() +
+        deltaDays
+      );
+
+
+      return (
+        `${date.getUTCFullYear()}-` +
+        `${String(
+          date.getUTCMonth() + 1
+        ).padStart(2, "0")}-` +
+        `${String(
+          date.getUTCDate()
+        ).padStart(2, "0")}`
+      );
+
+    }
+
+
+    function getPlaybackDateBounds() {
+
+      const today =
+        getJakartaDate();
+
+
+      return {
+
+        today,
+
+        minimum:
+          shiftDateString(
+            today,
+            -(PLAYBACK_RETENTION_DAYS - 1)
+          )
+
+      };
+
+    }
+
+
     /* ============================================================
        PLAYBACK QUERY
        ============================================================ */
@@ -3924,12 +3997,83 @@
       }
 
 
+      const bounds =
+        getPlaybackDateBounds();
+
+
+      if (
+        date < bounds.minimum ||
+        date > bounds.today
+      ) {
+
+        throw new Error(
+          "Tanggal hanya tersedia untuk 7 hari terakhir"
+        );
+
+      }
+
+
       if (
         end <= start
       ) {
 
         throw new Error(
           "Jam selesai harus setelah jam mulai"
+        );
+
+      }
+
+
+      const [
+        startHour,
+        startMinute
+      ] =
+        start
+          .split(":")
+          .map(Number);
+
+
+      const [
+        endHour,
+        endMinute
+      ] =
+        end
+          .split(":")
+          .map(Number);
+
+
+      const durationMinutes =
+        (
+          endHour * 60 +
+          endMinute
+        ) -
+        (
+          startHour * 60 +
+          startMinute
+        );
+
+
+      if (
+        !Number.isFinite(
+          durationMinutes
+        ) ||
+        durationMinutes <= 0
+      ) {
+
+        throw new Error(
+          "Durasi playback tidak valid"
+        );
+
+      }
+
+
+      if (
+        durationMinutes >
+        PLAYBACK_MAX_MINUTES
+      ) {
+
+        throw new Error(
+          "Rentang maksimum 1 jam"
         );
 
       }
@@ -3946,15 +4090,110 @@
 
 
     /* ============================================================
-       STOP PLAYBACK
+       PLAYBACK HLS STATE
        ============================================================ */
 
-    function stopPlayback() {
+    let playbackHls =
+      null;
+
+
+    let playbackStopUrl =
+      null;
+
+
+    let playbackStarting =
+      false;
+
+
+    /* ============================================================
+       PLAYBACK SERVER STOP
+       ============================================================ */
+
+    async function stopPlaybackServer() {
+
+      const stopUrl =
+        playbackStopUrl;
+
+
+      playbackStopUrl =
+        null;
+
+
+      if (
+        !stopUrl
+      ) {
+
+        return;
+
+      }
+
+
+      try {
+
+        await fetch(
+          stopUrl,
+          {
+            method:
+              "GET",
+
+            cache:
+              "no-store",
+
+            keepalive:
+              true
+          }
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(
+          "[PLAYBACK STOP SERVER]",
+          error.message
+        );
+
+      }
+
+    }
+
+
+    /* ============================================================
+       RESET PLAYBACK PLAYER
+       ============================================================ */
+
+    function resetPlaybackPlayer() {
 
       const video =
         document.getElementById(
           "playbackVideo"
         );
+
+
+      if (
+        playbackHls
+      ) {
+
+        try {
+
+          playbackHls.destroy();
+
+        }
+
+        catch (error) {
+
+          console.log(
+            "[HLS DESTROY]",
+            error.message
+          );
+
+        }
+
+
+        playbackHls =
+          null;
+
+      }
 
 
       video.pause();
@@ -3973,68 +4212,333 @@
       ).style.display =
         "flex";
 
+    }
 
-      document.getElementById(
-        "playbackStatus"
-      ).textContent =
-        "Stopped";
+
+    /* ============================================================
+       STOP PLAYBACK
+       ============================================================ */
+
+    async function stopPlayback(
+      options = {}
+    ) {
+
+      const {
+        notifyServer = true,
+        updateStatus = true
+      } = options;
+
+
+      resetPlaybackPlayer();
+
+
+      if (
+        notifyServer
+      ) {
+
+        await stopPlaybackServer();
+
+      }
+
+      else {
+
+        playbackStopUrl =
+          null;
+
+      }
+
+
+      if (
+        updateStatus
+      ) {
+
+        document.getElementById(
+          "playbackStatus"
+        ).textContent =
+          "Stopped";
+
+      }
 
     }
 
 
     /* ============================================================
-       PLAY RECORDING
+       START HLS SESSION
        ============================================================ */
 
-    function playRecording() {
+    async function startPlaybackHlsSession(
+      query
+    ) {
 
-      const status =
-        document.getElementById(
-          "playbackStatus"
+      const maxAttempts =
+        8;
+
+
+      for (
+        let attempt = 1;
+        attempt <= maxAttempts;
+        attempt++
+      ) {
+
+        const response =
+          await fetch(
+            `/api/playback/hls/start?${query}` +
+            `&_=${Date.now()}`,
+            {
+              method:
+                "GET",
+
+              cache:
+                "no-store"
+            }
+          );
+
+
+        const data =
+          await response
+            .json()
+            .catch(
+              () => ({})
+            );
+
+
+        if (
+          response.ok &&
+          data.success &&
+          data.playlist_url
+        ) {
+
+          return data;
+
+        }
+
+
+        /*
+         * Kalau playback sebelumnya baru saja dihentikan,
+         * FFmpeg mungkin butuh maksimal beberapa detik untuk
+         * benar-benar melepas session RTSP NVR.
+         */
+        if (
+          response.status === 409 &&
+          attempt < maxAttempts
+        ) {
+
+          await new Promise(
+            resolve =>
+              setTimeout(
+                resolve,
+                500
+              )
+          );
+
+
+          continue;
+
+        }
+
+
+        throw new Error(
+          data.error ||
+          `Gagal memulai HLS (HTTP ${response.status})`
+        );
+
+      }
+
+
+      throw new Error(
+        "Playback sebelumnya belum selesai dilepas"
+      );
+
+    }
+
+
+    /* ============================================================
+       ATTACH HLS TO VIDEO
+       ============================================================ */
+
+    function attachPlaybackHls(
+      video,
+      playlistUrl,
+      status
+    ) {
+
+      if (
+        window.Hls &&
+        Hls.isSupported()
+      ) {
+
+        playbackHls =
+          new Hls({
+
+            enableWorker:
+              true,
+
+            lowLatencyMode:
+              false,
+
+            backBufferLength:
+              30,
+
+            maxBufferLength:
+              30,
+
+            maxBufferSize:
+              60 * 1000 * 1000
+
+          });
+
+
+        playbackHls.loadSource(
+          playlistUrl
         );
 
 
-      try {
-
-        /*
-         * Hemat data.
-         *
-         * Saat playback diputar,
-         * semua live CCTV dimatikan.
-         */
-        stopAllLive();
+        playbackHls.attachMedia(
+          video
+        );
 
 
-        stopPlayback();
+        playbackHls.on(
+          Hls.Events.MANIFEST_PARSED,
+          () => {
+
+            status.textContent =
+              "Siap diputar";
 
 
-        const query =
-          getPlaybackQuery();
+            video.play()
+              .then(
+                () => {
+
+                  status.textContent =
+                    "Playback";
+
+                }
+              )
+              .catch(
+                error => {
+
+                  /*
+                   * Browser kadang memblokir autoplay ber-audio
+                   * setelah proses fetch async. Player tetap siap;
+                   * user cukup tekan tombol Play bawaan video.
+                   */
+                  console.log(
+                    "[HLS PLAY]",
+                    error.message
+                  );
 
 
-        const video =
-          document.getElementById(
-            "playbackVideo"
-          );
+                  status.textContent =
+                    "Siap - tekan Play pada video";
+
+                }
+              );
+
+          }
+        );
 
 
-        const empty =
-          document.getElementById(
-            "playbackEmpty"
-          );
+        playbackHls.on(
+          Hls.Events.ERROR,
+          (
+            event,
+            data
+          ) => {
+
+            console.error(
+              "[HLS ERROR]",
+              data
+            );
 
 
-        status.textContent =
-          "Memuat recording...";
+            if (
+              !data ||
+              !data.fatal
+            ) {
+
+              return;
+
+            }
 
 
-        empty.style.display =
-          "none";
+            if (
+              data.type ===
+              Hls.ErrorTypes.NETWORK_ERROR
+            ) {
 
+              status.textContent =
+                "HLS network retry...";
+
+
+              try {
+
+                playbackHls.startLoad();
+
+              }
+
+              catch (_) {
+              }
+
+
+              return;
+
+            }
+
+
+            if (
+              data.type ===
+              Hls.ErrorTypes.MEDIA_ERROR
+            ) {
+
+              status.textContent =
+                "HLS media recovery...";
+
+
+              try {
+
+                playbackHls.recoverMediaError();
+
+              }
+
+              catch (_) {
+              }
+
+
+              return;
+
+            }
+
+
+            status.textContent =
+              "Playback HLS gagal";
+
+
+            resetPlaybackPlayer();
+
+
+            void stopPlaybackServer();
+
+          }
+        );
+
+
+        return;
+
+      }
+
+
+      /*
+       * Safari / browser dengan native HLS.
+       */
+      if (
+        video.canPlayType(
+          "application/vnd.apple.mpegurl"
+        )
+      ) {
 
         video.src =
-          `/api/playback/stream?${query}` +
-          `&_=${Date.now()}`;
+          playlistUrl;
 
 
         video.load();
@@ -4050,26 +4554,157 @@
             }
           )
           .catch(
-            error => {
+            () => {
 
-              /*
-               * Browser mungkin butuh buffer
-               * beberapa saat.
-               */
-              console.log(
-                "[PLAYBACK PLAY]",
-                error.message
-              );
+              status.textContent =
+                "Siap - tekan Play pada video";
 
             }
           );
+
+
+        return;
+
+      }
+
+
+      throw new Error(
+        "Browser tidak mendukung HLS"
+      );
+
+    }
+
+
+    /* ============================================================
+       PLAY RECORDING - HLS
+       ============================================================ */
+
+    async function playRecording() {
+
+      if (
+        playbackStarting
+      ) {
+
+        return;
+
+      }
+
+
+      const status =
+        document.getElementById(
+          "playbackStatus"
+        );
+
+
+      const playButton =
+        document.getElementById(
+          "playbackPlayButton"
+        );
+
+
+      playbackStarting =
+        true;
+
+
+      playButton.disabled =
+        true;
+
+
+      try {
+
+        /*
+         * Validasi request sebelum mengubah state player.
+         */
+        const query =
+          getPlaybackQuery();
+
+
+        /*
+         * Live WebRTC hanya dihentikan saat playback diminta.
+         * Jalur MediaMTX sendiri tidak diubah.
+         */
+        stopAllLive();
+
+
+        await stopPlayback({
+          notifyServer:
+            true,
+
+          updateStatus:
+            false
+        });
+
+
+        const video =
+          document.getElementById(
+            "playbackVideo"
+          );
+
+
+        const empty =
+          document.getElementById(
+            "playbackEmpty"
+          );
+
+
+        status.textContent =
+          "Menyiapkan recording...";
+
+
+        empty.style.display =
+          "none";
+
+
+        const data =
+          await startPlaybackHlsSession(
+            query
+          );
+
+
+        playbackStopUrl =
+          data.stop_url ||
+          null;
+
+
+        status.textContent =
+          "Memuat HLS...";
+
+
+        attachPlaybackHls(
+          video,
+          data.playlist_url,
+          status
+        );
 
       }
 
       catch (error) {
 
+        console.error(
+          "[PLAYBACK ERROR]",
+          error
+        );
+
+
         status.textContent =
           error.message;
+
+
+        resetPlaybackPlayer();
+
+
+        await stopPlaybackServer();
+
+      }
+
+      finally {
+
+        playbackStarting =
+          false;
+
+
+        playButton.disabled =
+          false;
 
       }
 
@@ -4080,7 +4715,7 @@
        DOWNLOAD RECORDING
        ============================================================ */
 
-    function downloadRecording() {
+    async function downloadRecording() {
 
       const status =
         document.getElementById(
@@ -4088,15 +4723,21 @@
         );
 
 
+      const button =
+        document.getElementById(
+          "playbackDownloadButton"
+        );
+
+
+      button.disabled =
+        true;
+
+
       try {
 
         /*
-         * Biar kuota tidak dipakai
-         * live + download bersamaan.
+         * Validasi dulu sebelum menghentikan session yang aktif.
          */
-        stopAllLive();
-
-
         const query =
           getPlaybackQuery();
 
@@ -4125,6 +4766,35 @@
           ).value;
 
 
+        stopAllLive();
+
+
+        status.textContent =
+          "Melepas playback...";
+
+
+        /*
+         * Download menggunakan lock FFmpeg yang sama dengan HLS.
+         * Session playback lama harus dihentikan lebih dulu.
+         */
+        await stopPlayback({
+          notifyServer:
+            true,
+
+          updateStatus:
+            false
+        });
+
+
+        await new Promise(
+          resolve =>
+            setTimeout(
+              resolve,
+              1000
+            )
+        );
+
+
         const anchor =
           document.createElement(
             "a"
@@ -4132,7 +4802,8 @@
 
 
         anchor.href =
-          `/api/playback/download?${query}`;
+          `/api/playback/download?${query}` +
+          `&_=${Date.now()}`;
 
 
         anchor.download =
@@ -4162,8 +4833,21 @@
 
       catch (error) {
 
+        console.error(
+          "[DOWNLOAD]",
+          error
+        );
+
+
         status.textContent =
           error.message;
+
+      }
+
+      finally {
+
+        button.disabled =
+          false;
 
       }
 
@@ -4197,12 +4881,40 @@
 
 
       /*
-       * Default playback hari ini.
+       * Playback mengikuti rolling retention 7 hari.
        */
+      const playbackDateInput =
+        document.getElementById(
+          "playbackDate"
+        );
+
+
+      const playbackBounds =
+        getPlaybackDateBounds();
+
+
+      playbackDateInput.value =
+        playbackBounds.today;
+
+
+      playbackDateInput.min =
+        playbackBounds.minimum;
+
+
+      playbackDateInput.max =
+        playbackBounds.today;
+
+
       document.getElementById(
-        "playbackDate"
+        "playbackStart"
       ).value =
-        getJakartaDate();
+        "";
+
+
+      document.getElementById(
+        "playbackEnd"
+      ).value =
+        "";
 
 
       renderSensors();
@@ -4234,27 +4946,6 @@
       ).addEventListener(
         "click",
         stopAllLive
-      );
-
-
-      document.getElementById(
-        "fullDayButton"
-      ).addEventListener(
-        "click",
-        () => {
-
-          document.getElementById(
-            "playbackStart"
-          ).value =
-            "00:00";
-
-
-          document.getElementById(
-            "playbackEnd"
-          ).value =
-            "23:59";
-
-        }
       );
 
 
@@ -4316,12 +5007,21 @@
 
       playbackVideo.addEventListener(
         "ended",
-        () => {
+        async () => {
 
           document.getElementById(
             "playbackStatus"
           ).textContent =
-            "Selesai";
+            "Selesai · melepas session...";
+
+
+          await stopPlaybackServer();
+
+
+          document.getElementById(
+            "playbackStatus"
+          ).textContent =
+            "Selesai · siap download";
 
         }
       );

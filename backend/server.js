@@ -5,11 +5,6 @@ import cors from "cors";
 import http from "node:http";
 import https from "node:https";
 
-
-/* ============================================================
-   PATH
-   ============================================================ */
-
 const __filename =
   fileURLToPath(
     import.meta.url
@@ -21,12 +16,9 @@ const __dirname =
   );
 
 
-/* ============================================================
-   APP
-   ============================================================ */
-
 const app =
   express();
+
 
 const PORT =
   Number(
@@ -39,42 +31,38 @@ const PORT =
    MINI PC SERVICES
    ============================================================ */
 
-/*
- * bridge.py
- *
- * Sensor state
- * NVR state
- * Camera list
- */
 const SECURITY_BACKEND =
   process.env.SECURITY_BACKEND ||
   "http://192.168.1.140:8088";
 
 
-/*
- * MediaMTX WebRTC lokal.
- *
- * Frontend saat ini langsung membuka URL ini,
- * bukan melalui proxy Node.
- */
 const MEDIAMTX_WEBRTC_BASE =
   process.env.MEDIAMTX_WEBRTC_BASE ||
   "http://192.168.1.140:8889";
 
 
-/*
- * Playback API di mini PC.
- *
- * Search
- * Stream
- * Download
- *
- * Tidak memakai Cloudflare.
- * Tidak berubah saat Quick Tunnel reboot.
- */
 const PLAYBACK_BACKEND =
   process.env.PLAYBACK_BACKEND ||
   "http://192.168.1.140:8090";
+
+
+/*
+ * Playback maksimum 1 jam.
+ *
+ * Playback API mini PC juga punya guard 1 jam.
+ * Guard di Node ini mencegah request ngawur
+ * mencapai mini PC.
+ */
+const PLAYBACK_MAX_SECONDS =
+  3600;
+
+
+/*
+ * Dashboard hanya menerima tanggal
+ * hari ini + 6 hari sebelumnya.
+ */
+const PLAYBACK_RETENTION_DAYS =
+  7;
 
 
 /* ============================================================
@@ -104,7 +92,8 @@ app.use(
 
 app.use(
   cors({
-    origin: "*",
+    origin:
+      "*",
 
     methods: [
       "GET",
@@ -121,7 +110,7 @@ app.use(
 
 
 /*
- * Dashboard harus selalu mengambil
+ * Dashboard lokal harus selalu mengambil
  * data terbaru.
  */
 app.use(
@@ -136,6 +125,7 @@ app.use(
       "no-store"
     );
 
+
     next();
 
   }
@@ -143,12 +133,11 @@ app.use(
 
 
 /*
- * Serve file frontend:
+ * Serve:
  *
- * index.html
- * css
- * asset
- * dll
+ * frontend/index.html
+ * frontend/hls.min.js
+ * asset lain
  */
 app.use(
   express.static(
@@ -253,15 +242,12 @@ async function fetchJson(
   ) {
 
     throw new Error(
-
       `HTTP ${response.status}` +
-
       (
         text
           ? `: ${text.slice(0, 300)}`
           : ""
       )
-
     );
 
   }
@@ -282,6 +268,402 @@ async function fetchJson(
     );
 
   }
+
+}
+
+
+/* ============================================================
+   DATE WIB
+   ============================================================ */
+
+function getJakartaDateString() {
+
+  const formatter =
+    new Intl.DateTimeFormat(
+      "en-CA",
+      {
+        timeZone:
+          "Asia/Jakarta",
+
+        year:
+          "numeric",
+
+        month:
+          "2-digit",
+
+        day:
+          "2-digit"
+      }
+    );
+
+
+  const values =
+    {};
+
+
+  for (
+    const part of
+    formatter.formatToParts(
+      new Date()
+    )
+  ) {
+
+    values[
+      part.type
+    ] =
+      part.value;
+
+  }
+
+
+  return (
+    `${values.year}-` +
+    `${values.month}-` +
+    `${values.day}`
+  );
+
+}
+
+
+/* ============================================================
+   SHIFT DATE
+   ============================================================ */
+
+function shiftDateString(
+  dateString,
+  deltaDays
+) {
+
+  const [
+    year,
+    month,
+    day
+  ] =
+    String(
+      dateString
+    )
+      .split("-")
+      .map(Number);
+
+
+  const date =
+    new Date(
+      Date.UTC(
+        year,
+        month - 1,
+        day
+      )
+    );
+
+
+  date.setUTCDate(
+    date.getUTCDate() +
+    deltaDays
+  );
+
+
+  return (
+    `${date.getUTCFullYear()}-` +
+    `${String(
+      date.getUTCMonth() + 1
+    ).padStart(
+      2,
+      "0"
+    )}-` +
+    `${String(
+      date.getUTCDate()
+    ).padStart(
+      2,
+      "0"
+    )}`
+  );
+
+}
+
+
+/* ============================================================
+   TIME PARSER
+   ============================================================ */
+
+function parseTimeToSeconds(
+  value
+) {
+
+  const match =
+    String(
+      value || ""
+    )
+      .trim()
+      .match(
+        /^(\d{2}):(\d{2})(?::(\d{2}))?$/
+      );
+
+
+  if (!match) {
+
+    return null;
+
+  }
+
+
+  const hour =
+    Number(
+      match[1]
+    );
+
+
+  const minute =
+    Number(
+      match[2]
+    );
+
+
+  const second =
+    Number(
+      match[3] || 0
+    );
+
+
+  if (
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59 ||
+    second < 0 ||
+    second > 59
+  ) {
+
+    return null;
+
+  }
+
+
+  return (
+    hour * 3600 +
+    minute * 60 +
+    second
+  );
+
+}
+
+
+/* ============================================================
+   PLAYBACK VALIDATION
+   ============================================================ */
+
+function validatePlaybackRequest(
+  req,
+  res,
+  next
+) {
+
+  const camera =
+    String(
+      req.query.camera ||
+      ""
+    ).trim();
+
+
+  const date =
+    String(
+      req.query.date ||
+      ""
+    ).trim();
+
+
+  const start =
+    String(
+      req.query.start ||
+      ""
+    ).trim();
+
+
+  const end =
+    String(
+      req.query.end ||
+      ""
+    ).trim();
+
+
+  /* ============================
+     REQUIRED PARAMETER
+     ============================ */
+
+  if (
+    !camera ||
+    !date ||
+    !start ||
+    !end
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "camera, date, start, dan end wajib diisi"
+
+      });
+
+  }
+
+
+  /* ============================
+     DATE FORMAT
+     ============================ */
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(
+      date
+    )
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "Tanggal tidak valid"
+
+      });
+
+  }
+
+
+  /* ============================
+     RETENTION 7 HARI
+     ============================ */
+
+  const today =
+    getJakartaDateString();
+
+
+  const minimumDate =
+    shiftDateString(
+      today,
+      -(
+        PLAYBACK_RETENTION_DAYS -
+        1
+      )
+    );
+
+
+  if (
+    date < minimumDate ||
+    date > today
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "Tanggal hanya tersedia untuk 7 hari terakhir"
+
+      });
+
+  }
+
+
+  /* ============================
+     TIME FORMAT
+     ============================ */
+
+  const startSeconds =
+    parseTimeToSeconds(
+      start
+    );
+
+
+  const endSeconds =
+    parseTimeToSeconds(
+      end
+    );
+
+
+  if (
+    startSeconds === null ||
+    endSeconds === null
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "Jam tidak valid"
+
+      });
+
+  }
+
+
+  /* ============================
+     END > START
+     ============================ */
+
+  if (
+    endSeconds <=
+    startSeconds
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "Jam selesai harus setelah jam mulai"
+
+      });
+
+  }
+
+
+  /* ============================
+     MAX 1 JAM
+     ============================ */
+
+  const durationSeconds =
+    endSeconds -
+    startSeconds;
+
+
+  if (
+    durationSeconds >
+    PLAYBACK_MAX_SECONDS
+  ) {
+
+    return res
+      .status(400)
+      .json({
+
+        success:
+          false,
+
+        error:
+          "Rentang maksimum 1 jam"
+
+      });
+
+  }
+
+
+  next();
 
 }
 
@@ -310,15 +692,6 @@ function getQueryString(
    JSON PROXY
    ============================================================ */
 
-/*
- * Digunakan untuk:
- *
- * /api/playback/search
- * /api/playback/health
- *
- * Status code backend mini PC
- * ikut diteruskan.
- */
 async function proxyJson(
   res,
   url,
@@ -361,27 +734,20 @@ async function proxyJson(
    HTTP STREAM PROXY
    ============================================================ */
 
-/*
- * Digunakan untuk:
- *
- * playback stream
- * playback download
- *
- * File MP4 tidak ditampung dulu di RAM.
- *
- * Data langsung:
- *
- * mini PC :8090
- *       â†“
- * Node dashboard lokal
- *       â†“
- * Browser
- */
 function proxyStream(
   req,
   res,
-  endpoint
+  endpoint,
+  options = {}
 ) {
+
+  const {
+    retry409 = false,
+    maxAttempts = 1,
+    retryDelayMs = 700
+  } =
+    options;
+
 
   const query =
     getQueryString(
@@ -406,197 +772,46 @@ function proxyStream(
   );
 
 
-  let upstreamResponse =
+  let activeRequest =
     null;
 
 
-  const upstreamRequest =
-    client.request(
-      target,
-      {
-        method:
-          "GET",
-
-        headers: {
-
-          Accept:
-            req.headers.accept ||
-            "*/*",
-
-          "User-Agent":
-            "Local-Security-Dashboard"
-
-        }
-      },
-      response => {
-
-        upstreamResponse =
-          response;
+  let activeResponse =
+    null;
 
 
-        const statusCode =
-          response.statusCode ||
-          502;
-
-
-        res.status(
-          statusCode
-        );
-
-
-        /*
-         * Header yang memang berguna.
-         *
-         * Jangan copy semua header jaringan
-         * secara ngawur.
-         */
-        const headers = [
-
-          "content-type",
-
-          "content-disposition",
-
-          "content-length",
-
-          "cache-control",
-
-          "accept-ranges",
-
-          "x-accel-buffering"
-
-        ];
-
-
-        for (
-          const headerName of headers
-        ) {
-
-          const value =
-            response.headers[
-            headerName
-            ];
-
-
-          if (
-            value !== undefined
-          ) {
-
-            res.setHeader(
-              headerName,
-              value
-            );
-
-          }
-
-        }
-
-
-        /*
-         * Pipe langsung ke browser.
-         */
-        response.pipe(
-          res
-        );
-
-
-        response.on(
-          "error",
-          error => {
-
-            console.error(
-              "[PLAYBACK UPSTREAM ERROR]",
-              error.message
-            );
-
-
-            if (
-              !res.writableEnded
-            ) {
-
-              res.end();
-
-            }
-
-          }
-        );
-
-      }
-    );
-
-
-  upstreamRequest.on(
-    "error",
-    error => {
-
-      console.error(
-        "[PLAYBACK PROXY ERROR]",
-        error.message
-      );
-
-
-      if (
-        !res.headersSent
-      ) {
-
-        return res
-          .status(502)
-          .json({
-
-            success:
-              false,
-
-            error:
-              "Playback API mini PC tidak dapat diakses",
-
-            details:
-              error.message
-
-          });
-
-      }
-
-
-      if (
-        !res.writableEnded
-      ) {
-
-        res.end();
-
-      }
-
-    }
-  );
+  let clientClosed =
+    false;
 
 
   /*
-   * Kalau browser menekan STOP,
-   * pindah halaman,
-   * atau menutup tab,
-   *
-   * hentikan koneksi ke mini PC juga.
-   *
-   * Playback API di mini PC kemudian
-   * menghentikan FFmpeg.
+   * Kalau browser menutup request,
+   * hentikan koneksi ke playback API.
    */
-  res.on(
+  res.once(
     "close",
     () => {
 
+      clientClosed =
+        true;
+
+
       if (
-        upstreamResponse &&
-        !upstreamResponse.destroyed
+        activeResponse &&
+        !activeResponse.destroyed
       ) {
 
-        upstreamResponse.destroy();
+        activeResponse.destroy();
 
       }
 
 
       if (
-        !upstreamRequest.destroyed
+        activeRequest &&
+        !activeRequest.destroyed
       ) {
 
-        upstreamRequest.destroy();
+        activeRequest.destroy();
 
       }
 
@@ -604,13 +819,260 @@ function proxyStream(
   );
 
 
-  upstreamRequest.end();
+  const startAttempt =
+    attempt => {
+
+      if (
+        clientClosed ||
+        res.writableEnded
+      ) {
+
+        return;
+
+      }
+
+
+      const upstreamRequest =
+        client.request(
+          target,
+          {
+            method:
+              "GET",
+
+            headers: {
+
+              Accept:
+                req.headers.accept ||
+                "*/*",
+
+              "User-Agent":
+                "Local-Security-Dashboard"
+
+            }
+          },
+          response => {
+
+            activeResponse =
+              response;
+
+
+            const statusCode =
+              response.statusCode ||
+              502;
+
+
+            /*
+             * Download bisa kena 409 beberapa saat
+             * setelah HLS dihentikan.
+             *
+             * Tunggu lock FFmpeg benar-benar lepas.
+             */
+            if (
+              retry409 &&
+              statusCode === 409 &&
+              attempt < maxAttempts
+            ) {
+
+              console.log(
+                `[PLAYBACK PROXY] 409 retry ${attempt}/${maxAttempts}`
+              );
+
+
+              response.resume();
+
+
+              response.once(
+                "end",
+                () => {
+
+                  if (
+                    clientClosed ||
+                    res.writableEnded
+                  ) {
+
+                    return;
+
+                  }
+
+
+                  setTimeout(
+                    () => {
+
+                      startAttempt(
+                        attempt + 1
+                      );
+
+                    },
+                    retryDelayMs
+                  );
+
+                }
+              );
+
+
+              return;
+
+            }
+
+
+            res.status(
+              statusCode
+            );
+
+
+            /*
+             * Header yang memang perlu
+             * diteruskan ke browser.
+             */
+            const headers = [
+
+              "content-type",
+
+              "content-disposition",
+
+              "content-length",
+
+              "cache-control",
+
+              "accept-ranges",
+
+              "x-accel-buffering"
+
+            ];
+
+
+            for (
+              const headerName of headers
+            ) {
+
+              const value =
+                response.headers[
+                headerName
+                ];
+
+
+              if (
+                value !== undefined
+              ) {
+
+                res.setHeader(
+                  headerName,
+                  value
+                );
+
+              }
+
+            }
+
+
+            /*
+             * Stream langsung:
+             *
+             * mini PC
+             * -> Node
+             * -> browser
+             */
+            response.pipe(
+              res
+            );
+
+
+            response.on(
+              "error",
+              error => {
+
+                console.error(
+                  "[PLAYBACK UPSTREAM ERROR]",
+                  error.message
+                );
+
+
+                if (
+                  !res.writableEnded
+                ) {
+
+                  res.end();
+
+                }
+
+              }
+            );
+
+          }
+        );
+
+
+      activeRequest =
+        upstreamRequest;
+
+
+      upstreamRequest.on(
+        "error",
+        error => {
+
+          if (
+            clientClosed
+          ) {
+
+            return;
+
+          }
+
+
+          console.error(
+            "[PLAYBACK PROXY ERROR]",
+            error.message
+          );
+
+
+          if (
+            !res.headersSent
+          ) {
+
+            return res
+              .status(502)
+              .json({
+
+                success:
+                  false,
+
+                error:
+                  "Playback API mini PC tidak dapat diakses",
+
+                details:
+                  error.message
+
+              });
+
+          }
+
+
+          if (
+            !res.writableEnded
+          ) {
+
+            res.end();
+
+          }
+
+        }
+      );
+
+
+      upstreamRequest.end();
+
+    };
+
+
+  startAttempt(
+    1
+  );
 
 }
 
 
 /* ============================================================
-   CAMERA LIST NORMALIZER
+   CAMERA NORMALIZER
    ============================================================ */
 
 function normalizeCameraList(
@@ -692,7 +1154,13 @@ app.get(
 
         "/api/playback/stream",
 
-        "/api/playback/download"
+        "/api/playback/download",
+
+        "/api/playback/hls/start",
+
+        "/api/playback/hls/stop",
+
+        "/api/playback/hls/files/:session/index.m3u8"
 
       ]
 
@@ -926,7 +1394,8 @@ app.get(
    CAMERA CACHE
    ============================================================ */
 
-let cameraCache = {
+let cameraCache =
+{
 
   data:
     null,
@@ -955,7 +1424,7 @@ app.get(
     try {
 
       /*
-       * Cache hanya 5 detik.
+       * Cache kamera 5 detik.
        */
       if (
         cameraCache.data &&
@@ -983,7 +1452,8 @@ app.get(
         );
 
 
-      cameraCache = {
+      cameraCache =
+      {
 
         data:
           cameras,
@@ -1014,9 +1484,8 @@ app.get(
 
 
       /*
-       * Kalau bridge sementara gagal,
-       * cache lama masih lebih berguna
-       * daripada nihil.
+       * Kalau bridge sesaat gagal,
+       * gunakan cache terakhir.
        */
       if (
         cameraCache.data
@@ -1061,13 +1530,9 @@ app.get(
     try {
 
       return await proxyJson(
-
         res,
-
         `${PLAYBACK_BACKEND}/api/health`,
-
         10000
-
       );
 
     }
@@ -1105,6 +1570,15 @@ app.get(
    PLAYBACK SEARCH
    ============================================================ */
 
+/*
+ * Search sengaja TIDAK dibatasi 1 jam.
+ *
+ * Playback API bisa memakai search satu hari
+ * untuk menemukan recording.
+ *
+ * Yang dibatasi 1 jam adalah:
+ * stream, download dan HLS start.
+ */
 app.get(
   "/api/playback/search",
   async (
@@ -1121,13 +1595,9 @@ app.get(
 
 
       return await proxyJson(
-
         res,
-
         `${PLAYBACK_BACKEND}/api/playback/search${query}`,
-
         35000
-
       );
 
     }
@@ -1167,6 +1637,9 @@ app.get(
 
 app.get(
   "/api/playback/stream",
+
+  validatePlaybackRequest,
+
   (
     req,
     res
@@ -1188,6 +1661,9 @@ app.get(
 
 app.get(
   "/api/playback/download",
+
+  validatePlaybackRequest,
+
   (
     req,
     res
@@ -1196,7 +1672,19 @@ app.get(
     proxyStream(
       req,
       res,
-      "/api/playback/download"
+      "/api/playback/download",
+      {
+
+        retry409:
+          true,
+
+        maxAttempts:
+          10,
+
+        retryDelayMs:
+          800
+
+      }
     );
 
   }
@@ -1209,6 +1697,9 @@ app.get(
 
 app.get(
   "/api/playback/hls/start",
+
+  validatePlaybackRequest,
+
   (
     req,
     res
@@ -1265,6 +1756,7 @@ app.get(
   }
 );
 
+
 /* ============================================================
    SPA FALLBACK
    ============================================================ */
@@ -1277,8 +1769,8 @@ app.get(
   ) => {
 
     /*
-     * API salah jangan malah
-     * dikasih index.html.
+     * Request /api yang salah
+     * jangan dilempar ke index.html.
      */
     if (
       req.path.startsWith(
@@ -1405,7 +1897,11 @@ app.listen(
     );
 
     console.log(
-      "Playback  : MINI PC PROXY ENABLED"
+      "Playback  : MAX 1 JAM"
+    );
+
+    console.log(
+      "Retention : 7 HARI"
     );
 
     console.log(
